@@ -15,12 +15,14 @@
   VG.CHARACTERS = {
     valen:   { name: 'VALEN', skin: '#f1c5a2', hair: '#634534', eyes: '#583f30', shirt: '#759787', pants: '#40536a', sprite: 'assets/characters/valen.png' },
     kiara:   { name: 'KIARA', skin: '#f0c3a1', hair: '#bc5d36', eyes: '#684a32', shirt: '#edb968', pants: '#765969', sprite: 'assets/characters/kiara.png' },
-    bene:    { name: 'BENE', skin: '#dba481', hair: '#433735', eyes: '#463a32', shirt: '#8e87ad', pants: '#45465b', sprite: null },
-    chupe:   { name: 'CHUPE', skin: '#e7b28e', hair: '#73523a', eyes: '#4b3930', shirt: '#d87966', pants: '#4d5b66', sprite: null },
-    friend1: { name: 'AMIGO', skin: '#cf9470', hair: '#3b3033', eyes: '#463530', shirt: '#82a5bd', pants: '#5c5261', sprite: null },
-    friend2: { name: 'AMIGA', skin: '#edc2a1', hair: '#a17b47', eyes: '#654b31', shirt: '#a4ac76', pants: '#66566a', sprite: null },
-    friend3: { name: 'AMIGO', skin: '#ba8667', hair: '#4e352b', eyes: '#402d29', shirt: '#dba769', pants: '#56586c', sprite: null },
-    friend4: { name: 'AMIGA', skin: '#e9b996', hair: '#68483b', eyes: '#50382b', shirt: '#c692a5', pants: '#535f61', sprite: null },
+    bene:    { name: 'BENE', skin: '#dba481', hair: '#433735', eyes: '#463a32', shirt: '#8e87ad', pants: '#45465b', sprite: 'assets/characters/bene.png', backSprite: 'assets/characters/bene2.png' },
+    chupe:   { name: 'CHUPE', skin: '#e7b28e', hair: '#302c2d', eyes: '#4b3930', shirt: '#d87966', pants: '#4d5b66', sprite: 'sprite_variants/variant_black_hair.png' },
+    friend1: { name: 'AMIGO', skin: '#cf9470', hair: '#3b3033', eyes: '#463530', shirt: '#82a5bd', pants: '#5c5261', sprite: 'assets/characters/variant_red_hair.png' },
+    friend2: { name: 'AMIGA', skin: '#edc2a1', hair: '#a17b47', eyes: '#654b31', shirt: '#a4ac76', pants: '#66566a', sprite: 'assets/characters/woman_blonde_hair.png' },
+    friend3: { name: 'AMIGO', skin: '#ba8667', hair: '#4e352b', eyes: '#402d29', shirt: '#dba769', pants: '#56586c', sprite: 'assets/characters/variant_blonde_hair.png' },
+    friend4: { name: 'AMIGA', skin: '#e9b996', hair: '#68483b', eyes: '#50382b', shirt: '#c692a5', pants: '#535f61', sprite: 'assets/characters/woman_brown_hair.png' },
+    friend5: { name: 'AMIGO', skin: '#cf9470', hair: '#302c2d', eyes: '#463530', shirt: '#82a5bd', pants: '#5c5261', sprite: 'sprite_variants/variant_black_hair.png' },
+    friend6: { name: 'AMIGA', skin: '#edc2a1', hair: '#29272c', eyes: '#654b31', shirt: '#a4ac76', pants: '#66566a', sprite: 'sprite_variants/woman_black_hair.png' },
     vendor:  { name: 'EN EL LOCAL', skin: '#d6a17b', hair: '#4b3e36', eyes: '#4b3930', shirt: '#faf0d4', pants: '#729082', sprite: null },
     passerby:{ name: 'VECINO', skin: '#d9b091', hair: '#8c8476', eyes: '#594e42', shirt: '#a5b8a0', pants: '#667175', sprite: null }
   };
@@ -179,8 +181,8 @@
       { speaker: 'VALEN', text: 'JAJA bueno, recuperate primero' }
     ],
     instagramMission: [
-      { kind: 'narrator', text: 'MISIÓN ACTUALIZADA\nEsperar a que Kiara sobreviva.' },
-      { kind: 'narrator', text: 'Unos días después...\nKiara sobrevivió.' }
+      { kind: 'narrator', text: 'MISIÓN ACTUALIZADA\nEsperar a que Kiara se recupere.' },
+      { kind: 'narrator', text: 'Unos días después...\nKiara se recuperó.' }
     ],
 
     plazaIntro: [
@@ -191,7 +193,7 @@
       { speaker: 'VALEN', text: 'hola' },
       { kind: 'narrator', text: 'Le das la mano.' },
       { kind: 'narrator', text: '...' },
-      { kind: 'narrator', text: 'Un saludo completamente normal\ny para nada incómodo.' },
+      { kind: 'narrator', text: 'Un saludo completamente normal.' },
       { speaker: 'KIARA', text: '¿caminamos?' },
       { speaker: 'VALEN', text: 'dale.' }
     ],
@@ -204,7 +206,7 @@
     walk1: [
       { speaker: 'KIARA', text: '¿por dónde vamos?', choices: [
         { text: 'por donde haya sombra', value: 'shade', reply: [{ speaker: 'KIARA', text: 'criterio sólido.' }] },
-        { text: 'hago como que sé', value: 'pretend', reply: [{ speaker: 'KIARA', text: 'bueno, te sigo. con confianza moderada.' }] },
+        { text: 'hago como que sé', value: 'pretend', reply: [{ speaker: 'KIARA', text: 'bueno, te sigo. con confianza absoluta.' }] },
         { text: 'seguimos ese camino', value: 'path', reply: [{ speaker: 'KIARA', text: 'dale. para algo lo pusieron.' }] }
       ] }
     ],
@@ -226,11 +228,6 @@
       { speaker: 'KIARA', text: 'qué conversación profunda' },
       { speaker: 'VALEN', text: 'recién estamos empezando' },
       { speaker: 'KIARA', text: 'bueno te perdono' }
-    ],
-    walkComfort: [
-      { speaker: 'VALEN', text: 'estás cómoda?' },
-      { speaker: 'KIARA', text: 'sisi' },
-      { speaker: 'VALEN', text: 'bueno' }
     ],
     yogurtInvite: [
       { speaker: 'KIARA', text: 'vamos por yogurt?' },
@@ -261,7 +258,7 @@
           { speaker: 'VALEN', text: 'está calculado.' }
         ] },
         { text: 'así está bien', value: 'plain', reply: [
-          { speaker: 'KIARA', text: 'una persona que sabe cuándo parar. mirá vos.' }
+          { speaker: 'KIARA', text: 'una persona que sabe cuándo parar.' }
         ] }
       ] }
     ],
@@ -305,13 +302,13 @@
       { speaker: 'KIARA', text: 'noo' },
       { speaker: 'KIARA', text: 'sí quería' },
       { speaker: 'VALEN', text: 'ah bueno' },
-      { speaker: 'VALEN', text: 'me habías asustado un poquito JAJA' },
+      { speaker: 'VALEN', text: 'pensé que me habías rechazado' },
       { speaker: 'KIARA', text: 'perdón 😭' },
       { speaker: 'VALEN', text: 'eh, tranqui' },
       { speaker: 'VALEN', text: 'no pasa nada' },
       { speaker: 'KIARA', text: 'es que me pongo nerviosa' },
       { speaker: 'VALEN', text: 'está bien' },
-      { speaker: 'VALEN', text: 'vamos despacio' }
+      { speaker: 'VALEN', text: 'no pasa nada' }
     ],
     benchCheckIn: [
       { speaker: 'VALEN', text: '¿así estás bien?' },
@@ -319,16 +316,13 @@
       { speaker: 'VALEN', text: '¿segura?' },
       { speaker: 'KIARA', text: 'sisi' },
       { speaker: 'KIARA', text: 'estoy bien' },
-      { speaker: 'VALEN', text: 'bueno' },
-      { speaker: 'VALEN', text: 'entonces me quedo acá' }
+      { speaker: 'VALEN', text: 'bueno' }
     ],
     benchThanks: [
       { speaker: 'KIARA', text: 'gracias' },
       { speaker: 'VALEN', text: 'por qué' },
       { speaker: 'KIARA', text: 'por no hacer que sea raro' },
-      { speaker: 'VALEN', text: 'ya dimos la mano para saludarnos' },
-      { speaker: 'VALEN', text: 'más raro que eso no se puede' },
-      { speaker: 'KIARA', text: 'CALLATE JAJA' }
+      { speaker: 'VALEN', text: 'no es raro' }
     ],
     benchAwkward: [
       { speaker: 'KIARA', text: 'qué vergüenza' },
@@ -352,8 +346,9 @@
       { speaker: 'KIARA', text: 'sí. así sí.' }
     ],
     fictionTransition: [
-      { kind: 'narrator', text: 'Hasta acá ya conocés la historia.' },
-      { kind: 'narrator', text: 'Lo que sigue no pasó.' }
+      { kind: 'narrator', text: 'Espero que te haya gustado todo esto.' },
+      { kind: 'narrator', text: 'Le puse mucho amor y por momentos pensé \n"me estoy excediendo de cursi y le voy a dar cringe".' },
+      { kind: 'narrator', text: 'Esto no es cannon pero quería agregarlo.' }
     ],
 
     flower1: [
@@ -393,7 +388,7 @@
       { speaker: 'KIARA', text: 'y genuinamente me pone muy feliz\nhaberte conocido' },
       { speaker: 'KIARA', text: 'y todavía te estoy conociendo' },
       { speaker: 'KIARA', text: 'no sé qué va a pasar entre nosotros' },
-      { speaker: 'KIARA', text: 'y tampoco quiero inventarme una historia\nsobre algo que recién está empezando' },
+      { speaker: 'KIARA', text: 'espero que cosas lindas' },
       { speaker: 'KIARA', text: 'solo sé que quiero seguir viéndote' },
       { speaker: 'KIARA', text: 'quiero seguir conociéndote\ntener más momentos boludos con vos' },
       { speaker: 'KIARA', text: 'salir\nhablar\nreírnos\ny ver qué pasa' },

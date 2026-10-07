@@ -219,7 +219,7 @@
         this.rect(30,17,25,21,'#82705d');this.rect(33,20,19,15,'#b5ad8c');this.rect(40,24,5,7,'#7e927d');
       }else{
         this.window(70,11,!!map.night);this.window(283,11,!!map.night);
-        this.rug(132,119,130,100,'#839788','#d6bc94');this.rug(20,190,103,68,'#b18b76','#d4ba8f');
+        this.rug(128,119,144,100,'#839788','#d6bc94');
         this.rect(232,17,20,20,'#82694e');this.rect(235,20,14,14,'#d5cba7');this.rect(241,23,1,6,'#77745d');this.rect(241,28,5,1,'#77745d');
       }
       if(!map.night){
@@ -485,9 +485,11 @@
           this.rect(x-2,y+h-13,w+4,6,'#aaa99a');this.rect(x+2,y+h-12,w-4,2,'#737e77');this.rect(x+w/2-2,y+h-9,5,1,'#dad2b8');break;
         case 'pc-desk':
           this.rect(x+4,y+12,5,h-8,'#86684f');this.rect(x+w-9,y+12,5,h-8,'#86684f');this.rect(x-2,y+1,w+4,8,'#c1a17b');
+          // The desk and the shared-table PC use the same computer below.
+        case 'pc':
           this.rect(x+18,y-20,43,27,'#4c5a55');this.rect(x+21,y-17,37,20,'#89a9a5');this.rect(x+35,y+7,9,4,'#5c6960');
           this.rect(x+28,y+10,25,3,'#626d63');this.rect(x+19,y+15,39,6,'#cfc8b1');
-          for(let xx=22;xx<x+53;xx+=5){if(xx<x+19)continue;this.rect(xx,y+17,2,1,'#89917e');}
+          for(let xx=x+22;xx<x+53;xx+=5)this.rect(xx,y+17,2,1,'#89917e');
           this.rect(x+67,y-7,12,31,'#5e6861');this.rect(x+71,y-3,4,1,'#b0bca7');
           if(o.status==='study'){for(let i=0;i<4;i++)this.rect(x+24,y-13+i*4,14+(i%2)*10,1,'#e5ebbf');}
           else if(o.status==='ready'){this.rect(x+32,y-11,7,7,'#b5d0bf');this.rect(x+41,y-11,7,7,'#c9d8bc');}
@@ -581,13 +583,13 @@
       const x = Math.round(a.x), y = Math.round(a.y);
       const lying=a.lying||['lying','sleep','sleeping','movie-lying'].includes(a.pose);
       if(lying&&!a._poseRender){
-        // Rotate the existing frame: custom artwork is retained in every pose.
-        this.ctx.save();this.ctx.translate(x,y-6);this.ctx.rotate(-Math.PI/2);
+        // Only the head stays outside the blanket; standing arms remain covered.
+        this.ctx.save();this.ctx.beginPath();this.ctx.rect(x-32,y-22,22,32);this.ctx.clip();
+        this.ctx.translate(x,y-6);this.ctx.rotate(-Math.PI/2);
         this.actor({...a,x:0,y:0,pose:null,lying:false,seated:false,walking:false,moving:false,hugging:false,_poseRender:true,dir:'down'},id);
         this.ctx.restore();
-        this.rect(x-8,y-18,20,23,a.blanket||'#9eaa94');this.rect(x-8,y-18,3,23,'#bec3a8');
+        this.rect(x-10,y-18,22,23,a.blanket||'#9eaa94');this.rect(x-10,y-18,3,23,'#bec3a8');
         this.rect(x-3,y-14,12,1,'rgba(234,229,195,.35)');this.rect(x-3,y-5,12,1,'rgba(234,229,195,.35)');
-        if(a.hugging)this.rect(x-13,y-5,3,17,cfg.skin);
         if(['sleep','sleeping'].includes(a.pose)&&Math.sin(this.t)>.25)this.text('z',x-26,y-28,'#dedbc2',7);
         return;
       }
@@ -596,11 +598,12 @@
       const step = walking ? Math.floor(this.t * 9) % 2 : 0;
       const bob = walking ? step : 0;
       this.shadow(x - 8, y - 3, 17, 6);
-      if (cfg.sprite) {
-        if (!this.sprites[cfg.sprite]) {
-          const im = new Image(); this.sprites[cfg.sprite] = im; im.src = cfg.sprite;
+      const sprite = d === 'up' && cfg.backSprite ? cfg.backSprite : cfg.sprite;
+      if (sprite) {
+        if (!this.sprites[sprite]) {
+          const im = new Image(); this.sprites[sprite] = im; im.src = sprite;
         }
-        const im = this.sprites[cfg.sprite];
+        const im = this.sprites[sprite];
         if (im.complete && im.naturalWidth) {
           if (im.naturalWidth === 128 && im.naturalHeight === 128) {
             const animation = SPRITE_ANIMATIONS[d] || SPRITE_ANIMATIONS.down;

@@ -11,7 +11,7 @@
     nextDay: { number: '04', title: 'Al día siguiente', startScene: 'memNextMorning', description: 'Cocinar, salir y terminar en una cancha.' },
     kiara: { number: '05', title: 'Kiara', startScene: 'memKiaraRoom', description: 'Una escena aparte. Ella sola, de noche.' }
   };
-  VG.CHARACTERS.sebi = { name: 'SEBI', skin: '#dda27b', hair: '#493a32', eyes: '#5c4435', shirt: '#a5baca', pants: '#414f62', sprite: null };
+  VG.CHARACTERS.sebi = { name: 'SEBI', skin: '#dda27b', hair: '#493a32', eyes: '#5c4435', shirt: '#a5baca', pants: '#414f62', sprite: 'assets/characters/sebi.png' };
 
   Object.assign(VG.STORY, {
     memMovieStart: [
@@ -146,8 +146,8 @@
       { speaker: 'KIARA', text: 'experiencia premium' }
     ],
     memTechOrder: [
-      { speaker: 'KIARA', text: 'yo, tostadas con huevo y palta.' },
-      { speaker: 'VALEN', text: 'yo voy con yogurt, frutas y granola.' }
+      { speaker: 'KIARA', text: 'qué vas a pedir?' },
+      { speaker: 'VALEN', text: 'no sé, estoy viendo.' }
     ],
     memTechCafeTalk: [
       { speaker: 'VALEN', text: 'eso qué tiene?' },
@@ -249,8 +249,8 @@
       { speaker: 'KIARA', text: 'me gusta estar acá con vos' },
       { speaker: 'VALEN', text: 'a mí también' }
     ],
-    memDinnerSofa: [
-      { kind: 'narrator', text: 'El sillón parece cómodo.\nPero ya está ganando la cama.' }
+    memDinnerRoom: [
+      { kind: 'narrator', text: 'El departamento está tranquilo.\nPero ya está ganando la cama.' }
     ],
     memDinnerSleep: [
       { speaker: 'KIARA', text: 'estás cómodo?' },
@@ -429,7 +429,7 @@
       { text: 'y aun así la paso re lindo' }
     ],
     memKiaraKnow: [
-      { text: 'hace poquito que lo conozco' },
+      { text: 'hace poco que lo conozco' },
       { text: 'todavía hay un montón de cosas que no sé de él' },
       { text: 'cosas que le gustan' },
       { text: 'cosas que le preocupan' },
@@ -437,7 +437,7 @@
       { text: 'quiero conocerlas' }
     ],
     memKiaraMore: [
-      { text: 'quiero conocerlo cada vez un poquito más' }
+      { text: 'cada cosa que conozco de él me gusta más' }
     ],
     memKiaraExcited: [
       { text: 'me emociona cuando sé que lo voy a ver' },
@@ -451,19 +451,22 @@
       { text: 'me gusta sentirlo cerca' }
     ],
     memKiaraUs: [
-      { text: 'no sé qué va a pasar con nosotros' },
-      { text: 'pero me gusta mucho lo que está pasando' }
+      { text: 'cinco minutos más pensando en Valen y listo' },
+      { text: '...' },
+      { text: 'ok, no puedo' },
     ],
     memKiaraDays: [
-      { text: 'y quiero seguir teniendo días así con él' },
-      { text: 'muchos' }
+      { text: 'qué estará haciendo ahora' },
+      { text: 'seguro algo mucho más normal que yo' }
     ],
     memKiaraLast: [
       { text: 'qué lindo que es' }
     ],
     memKiaraReflect: [
-      { text: 'creo que pienso bastante en él' },
-      { text: 'pero no me molesta' }
+      { text: '...' },
+      { text: 'qué horror, no puedo dejar de pensar en él' },
+      { text: 'creo que me gusta un poco' }, 
+      { text: 'un poco mucho' }
     ],
     memKiaraFinal: [
       { text: 'ojalá lo vea pronto' }

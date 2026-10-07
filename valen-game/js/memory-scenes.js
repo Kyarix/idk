@@ -172,8 +172,8 @@
           if (g.flags.techInstalled) { g.say('memTechInstalled'); return; }
           g.say('memTechPC', () => {
             const pc = g.object('pc'); if (pc) pc.status = 'installing';
-            Object.assign(g.companion, { x: 369, y: 139, pose: 'pc', dir: 'up', holdingUSB: false });
-            Object.assign(g.player, { x: 323, y: 144, dir: 'right' });
+            Object.assign(g.companion, { x: 212, y: 187, pose: 'pc', seated: true, dir: 'up', holdingUSB: false });
+            Object.assign(g.player, { x: 174, y: 187, pose: 'seated', seated: true, dir: 'right' });
             goal(g, '');
             g.animate('installation', 3, (time, c) => {
               c.progress = ease(time / 5.4); c.label = 'Instalando Windows';
@@ -181,7 +181,7 @@
               c.progress = .5 + ease(time / 5.4); c.label = 'Instalando Windows';
             }, () => {
               if (pc) pc.status = 'ready'; g.flags.techInstalled = true;
-              g.say('memTechInstalled', () => { stand(g, 322, 151); goal(g, 'Salgan a caminar', ['exit']); });
+              g.say('memTechInstalled', () => { stand(g, 236, 198); goal(g, 'Salgan a caminar', ['exit']); });
             })));
           }); return;
         }
@@ -272,7 +272,7 @@
         g.map.night = true; pair(g, 174, 187, 196, 187, 'standing');
         g.say('memDinnerApartment', () => closeAndKiss(g, () => g.say('memDinnerAfterKiss', () => goal(g, 'Suban a la habitación', ['stairs'])), { hug: false, targetY: 187 }));
       },
-      interact(g, t) { if (t.id === 'stairs') g.go('memDinnerBedroom'); else g.say('memDinnerSofa'); }
+      interact(g, t) { if (t.id === 'stairs') g.go('memDinnerBedroom'); else g.say('memDinnerRoom'); }
     }, 'flowers'),
 
     memDinnerBedroom: scene('dinner', 'memoryBedroom', {
@@ -299,7 +299,7 @@
     memNextApartment: scene('nextDay', 'memoryApartment', {
       enter(g) {
         g.map.night = false;
-        const k = g.npc('kiara'); if (k) Object.assign(k, { x: 369, y: 139, pose: 'pc', dir: 'up', solid: false });
+        const k = g.npc('kiara'); if (k) Object.assign(k, { x: 212, y: 187, pose: 'pc', seated: true, dir: 'up', solid: false });
         const pc = g.object('pc'); if (pc) pc.status = 'study';
         goal(g, 'Prepará algo en la cocina', ['kitchen']);
       },
@@ -311,7 +311,14 @@
             g.animate('morning', 6, () => { if (k) k.pose = 'pc'; }, () => g.say('memNextStudy', () =>
               g.say('memNextCare', () => g.thoughts('memNextThought', () => g.say('memNextInvite', () => {
                 g.flags.nextCooked = true; clearPose(g.player); if (k) { clearPose(k); k.dir = 'left'; }
-                g.animate('leave-desk', 2.2, time => { if (k) { k.x = lerp(369, 158, time / 2); k.y = lerp(139, 125, time / 2); k.walking = time < 2; } }, () => {
+                g.animate('leave-desk', 2.2, time => {
+                  if (!k) return;
+                  const route = [{ x: 212, y: 187 }, { x: 118, y: 187 }, { x: 118, y: 125 }, { x: 158, y: 125 }];
+                  const progress = ease(time / 2) * 3, index = Math.min(2, Math.floor(progress));
+                  const from = route[index], to = route[index + 1];
+                  k.x = lerp(from.x, to.x, progress - index); k.y = lerp(from.y, to.y, progress - index);
+                  k.dir = to.x !== from.x ? (to.x > from.x ? 'right' : 'left') : 'up'; k.walking = time < 2;
+                }, () => {
                   withKiara(g); stand(g); goal(g, 'Salgan para tomar el colectivo', ['exit']);
                 });
               })))));
