@@ -38,6 +38,7 @@ for (const [id, map] of Object.entries(VG.MAPS)) {
   const startRow = (map.spawn.y - minY) / STEP;
   assert(Number.isInteger(startColumn) && Number.isInteger(startRow));
   assert(player.canMove(map.spawn.x, map.spawn.y, map, npcs), id + ': spawn blocked');
+  for(const npc of npcs)assert(player.canMove(npc.x,npc.y,map,npcs.filter(n=>n!==npc)),id+': NPC inside collision '+npc.id);
   const start = startRow * columns + startColumn;
   queue[write++] = start;
   visited[start] = 1;
@@ -64,6 +65,13 @@ for (const [id, map] of Object.entries(VG.MAPS)) {
     }
   }
   const blocked = targets.filter((target, i) => minimum[i] > RANGE);
+  if(id==='birthday'){
+    // Inside the group and four routes around it must remain connected.
+    for(const [x,y] of [[194,234],[98,242],[194,182],[282,250],[194,306],[286,314]]){
+      const col=(x-minX)/STEP,row=(y-minY)/STEP;
+      assert(player.canMove(x,y,map,npcs)&&queue.subarray(0,write).includes(row*columns+col),`birthday: group/door route blocked at ${x},${y}`);
+    }
+  }
   console.log(`${id}: ${write} reachable grid positions, ${targets.length} interactions, ${blocked.length} blocked`);
   for (const target of blocked) {
     const d = minimum[targets.indexOf(target)];

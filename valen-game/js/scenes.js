@@ -23,12 +23,14 @@
   function startKiss(g){
     g.flags.beforeKiss=true;g.checkpoint('before-kiss');g.objective('');
     const k=g.companion;
-    // Two small movements, a heart, then Kiara takes a nervous step back.
+    // Valen approaches; Kiara turns her face away and he stops. Hold the pose
+    // long enough to read the movement before either character says anything.
     g.say('benchConfession',()=>{
-      g.animate('kiss',4.4,(t,c)=>{
-        g.player.x=506+10*Math.min(t/1.4,1);g.player.y=295;g.player.dir='right';
-        k.x=526+7*Math.max(0,Math.min((t-2.8)/.8,1));k.y=295;k.dir='left';
-        c.heart=t>1.4&&t<2.7;if(t>1.5&&!c.sounded){g.audio.play('kiss');c.sounded=true;}
+      g.animate('kiss',4.8,(t,c)=>{
+        const retreat=Math.max(0,Math.min((t-1.1)/.7,1));
+        g.player.x=506+8*Math.min(t/1.1,1);g.player.y=295;g.player.dir='right';
+        k.x=526+8*retreat;k.y=295-5*retreat;k.dir=t<1.1?'left':'up';
+        c.phase=t<1.1?'approach':'turned-away';
       },()=>g.say('afterKiss',()=>g.say('benchComfort',()=>{
         const a={x:g.player.x,y:g.player.y},b={x:k.x,y:k.y};
         g.animate('bench',2.4,(t)=>{const f=Math.min(t/1.7,1);g.player.x=a.x+(500-a.x)*f;g.player.y=a.y+(273-a.y)*f;k.x=b.x+(512-b.x)*f;k.y=b.y+(273-b.y)*f;g.player.dir=k.dir='down';g.player.seated=k.seated=f===1;g.player.hugging=f===1;},()=>
@@ -50,6 +52,8 @@
         if(!g.flags.kiaraThought&&k&&VG.distance(g.player,k)<100){g.flags.kiaraThought=true;g.say('kiaraThought',()=>g.checkpoint('party'));}
       },
       interact(g,t){
+        if(t.id==='door'){g.go('birthdayPatio');return;}
+        if(t.ambient){if(t.dialogue)g.say(t.dialogue);return;}
         if(t.id==='card-table'){
           if(g.flags.birthdayStage==='cards'){birthdayGoal(g);g.toast('Quedan '+(4-g.flags.cards.length)+' cartas.');return;}
           if(g.flags.greeted.length<2){g.say('cardWait');return;}
@@ -69,6 +73,16 @@
           g.say(key,()=>{if(t.id!=='kiara'&&!g.flags.greeted.includes(t.id))g.flags.greeted.push(t.id);birthdayGoal(g);g.checkpoint('party');});return;
         }
         g.say(t.id==='door'?'birthdayDoor':t.type==='sofa'?'sofa':'table');
+      }
+    },
+    birthdayPatio:{
+      map:'birthdayPatio',
+      enter(g){g.objective('');},
+      update(){},
+      interact(g,t){
+        if(t.id==='house-door'){g.go('birthday',{position:{x:288,y:315},noBanner:true});return;}
+        if(t.ambient){if(t.dialogue)g.say(t.dialogue);return;}
+        g.say(t.id==='patio-lamp'?'patioNight':'table');
       }
     },
     instagram:{
@@ -133,7 +147,7 @@
         if(t.id==='kiara'){
           if(g.flags.completed){g.say('fieldAfter');return;}
           g.checkpoint('before-message');
-          g.say('finalMessage',()=>{g.flags.finalRead=true;g.say('pieFinal',choices=>{g.flags.pieChoice=choices[0];
+          g.declare('finalMessage',()=>{g.flags.finalRead=true;g.say('pieFinal',choices=>{g.flags.pieChoice=choices[0];
             const k=g.npc('kiara');const a={x:g.player.x,y:g.player.y},b={x:k.x,y:k.y};
             g.animate('picnic',6.5,(time,c)=>{const t=Math.min(time/2,1);g.player.x=a.x+(826-a.x)*t;g.player.y=a.y+(276-a.y)*t;k.x=b.x+(840-b.x)*t;k.y=b.y+(276-b.y)*t;g.player.dir=k.dir='down';g.player.seated=k.seated=t===1;g.player.hugging=t===1;c.heart=time>2.5&&time<4;},()=>g.finish());
           });});return;

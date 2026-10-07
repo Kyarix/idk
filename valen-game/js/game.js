@@ -13,7 +13,7 @@
       this.canvas=$('game');this.input=new VG.Input();this.renderer=new VG.Renderer(this.canvas);
       const s=read(SETTINGS_KEY)||{};
       this.audio=new VG.Audio({volume:typeof s.volume==='number'?clamp(s.volume,0,1):.35,muted:!!s.muted},settings=>{write(SETTINGS_KEY,settings);this.syncAudio();});
-      this.dialogue=new VG.Dialogue(this.audio);this.phone=new VG.Phone(this);
+      this.dialogue=new VG.Dialogue(this.audio);this.declaration=new VG.Declaration(this);this.phone=new VG.Phone(this);
       this.time=0;this.sceneId='menu';this.flags={};this.camera={x:0,y:0};this.npcs=[];this.map=null;this.player=new VG.Player();this.paused=false;this.debug=false;this.fps=60;this.frame=0;this.toasts=0;this.bannerTime=0;this.stepTime=0;this.transition=null;this.cinematic=null;this.intertitle=null;this.completedView=false;
       this.save=this.validSave(read(SAVE_KEY));this.bindUI();this.syncAudio();this.refreshMenu();this.setOverlay(true);
       this.intro=1.4;this.last=performance.now();requestAnimationFrame(t=>this.tick(t));
@@ -48,28 +48,28 @@
     setOverlay(value){document.body.classList.toggle('overlay-active',value);}
     refreshMenu(){this.save=this.validSave(read(SAVE_KEY));$('continue-button').classList.toggle('hidden',!this.save);$('play-button').textContent=this.save?'Nueva partida':'Jugar';}
     newGame(continuing=false){
-      this.dialogue.close(true);this.intertitle=null;this.cinematic=null;this.paused=false;this.completedView=false;$('pause-screen').classList.add('hidden');$('credits').classList.add('hidden');$('intertitle').classList.add('hidden');
+      this.dialogue.close(true);this.declaration.close(true);this.intertitle=null;this.cinematic=null;this.paused=false;this.completedView=false;$('pause-screen').classList.add('hidden');$('credits').classList.add('hidden');$('intertitle').classList.add('hidden');
       const save=continuing?this.validSave(read(SAVE_KEY)):null;
       this.flags=save?JSON.parse(JSON.stringify(save.flags)):{};
       this.input.clear();this.audio.pause(false);
       this.go(save?save.scene:'birthday',{position:save?.position,checkpoint:save?.checkpoint});
     }
     showMenu(){
-      this.dialogue.close(true);this.phone.hide();this.cinematic=null;this.intertitle=null;this.transition=null;this.companion=null;this.sceneId='menu';this.map=null;this.target=null;this.completedView=false;this.input.clear();this.objective('');
+      this.dialogue.close(true);this.declaration.close(true);this.phone.hide();this.cinematic=null;this.intertitle=null;this.transition=null;this.companion=null;this.sceneId='menu';this.map=null;this.target=null;this.completedView=false;this.input.clear();this.objective('');
       $('credits').classList.add('hidden');$('intertitle').classList.add('hidden');$('title-screen').classList.remove('hidden');$('interact-hint').classList.add('hidden');$('chapter-label').textContent='una pequeña aventura';this.setOverlay(true);this.audio.scene('menu');this.refreshMenu();
     }
     loadScene(id,options={}){
       if(!VG.SCENES[id])throw new Error('Unknown chapter: '+id);
-      this.dialogue.close(true);this.phone.hide();this.cinematic=null;this.target=null;this.companion=null;this.followTrace=[];this.sceneId=id;this.scene=VG.SCENES[id];this.sceneAge=0;
+      this.dialogue.close(true);this.declaration.close(true);this.phone.hide();this.cinematic=null;this.target=null;this.companion=null;this.followTrace=[];this.sceneId=id;this.scene=VG.SCENES[id];this.sceneAge=0;
       this.map=this.scene.map?JSON.parse(JSON.stringify(VG.MAPS[this.scene.map])):null;
       const spawn=options.position||this.map?.spawn||{x:0,y:0};this.player=new VG.Player(spawn.x,spawn.y);
       this.npcs=this.map?this.map.npcs.map(n=>({...n,dir:n.dir||'down',walking:false})):[];
       // Old or hand-edited checkpoints cannot strand the player inside a wall.
       if(this.map&&!this.player.canMove(this.player.x,this.player.y,this.map,this.npcs)){this.player.x=this.map.spawn.x;this.player.y=this.map.spawn.y;}
       this.input.clear();$('title-screen').classList.add('hidden');$('credits').classList.add('hidden');this.setOverlay(false);
-      const chapter=VG.CHAPTERS[id==='yogurt'?'plaza':id];$('chapter-label').textContent=chapter?chapter.number+' / '+chapter.title:'';
-      this.audio.scene(id);this.cameraToPlayer(true);this.scene.enter(this,options.checkpoint);this.checkpoint(options.checkpoint||'start');
-      if(id!=='yogurt'&&id!=='instagram'&&id!=='flowers')this.banner(chapter);
+      const chapter=VG.CHAPTERS[id==='birthdayPatio'?'birthday':id==='yogurt'?'plaza':id];$('chapter-label').textContent=chapter?chapter.number+' / '+chapter.title:'';
+      this.audio.scene(id==='birthdayPatio'?'birthday':id);this.cameraToPlayer(true);this.scene.enter(this,options.checkpoint);this.checkpoint(options.checkpoint||'start');
+      if(!options.noBanner&&id!=='birthdayPatio'&&id!=='yogurt'&&id!=='instagram'&&id!=='flowers')this.banner(chapter);
     }
     go(id,options={}){this.fadeTo(()=>this.loadScene(id,options));}
     checkpoint(name){
@@ -80,8 +80,16 @@
     resetSave(){try{localStorage.removeItem(SAVE_KEY);}catch(_){}this.save=null;this.refreshMenu();return 'Progreso borrado. Los ajustes de audio se conservaron.';}
     say(key,done){
       const pages=typeof key==='string'?VG.STORY[key]:key;if(!pages)throw new Error('Missing dialogue: '+key);
+      this.declaration.close(true);
       this.input.clear();this.player.walking=false;if(this.companion)this.companion.walking=false;this.target=null;$('interact-hint').classList.add('hidden');
       this.dialogue.open(pages,result=>{this.input.clear();this.focus();if(done)done(result);});
+    }
+    declare(key,done){
+      const pages=typeof key==='string'?VG.STORY[key]:key;if(!pages)throw new Error('Missing message: '+key);
+      this.dialogue.close(true);this.input.clear();this.player.walking=false;this.target=null;$('interact-hint').classList.add('hidden');
+      const k=this.npc('kiara');
+      if(k){this.player.x=k.x-44;this.player.y=k.y;this.player.dir='right';k.dir='left';k.walking=false;}
+      this.declaration.open(pages,()=>{this.input.clear();this.focus();if(done)done();});this.cameraToPlayer(true);this.focus();
     }
     objective(text){$('objective-text').textContent=text;$('objective').classList.toggle('hidden',!text);}
     banner(chapter){if(!chapter)return;$('scene-banner').innerHTML='';const small=document.createElement('small');small.textContent='CAPÍTULO '+chapter.number;$('scene-banner').appendChild(small);$('scene-banner').appendChild(document.createTextNode(chapter.title));$('scene-banner').classList.remove('hidden');this.bannerTime=3.2;}
@@ -114,7 +122,7 @@
     }
     findTarget(){
       const p=this.player, facing={down:{x:0,y:1},up:{x:0,y:-1},left:{x:-1,y:0},right:{x:1,y:0}}[p.dir];
-      const candidates=[...this.npcs,...(this.sceneId==='plaza'&&this.companion?[this.companion]:[]),...this.map.objects.filter(o=>o.interact)];let nearest=null,best=Infinity;
+      const candidates=[...this.npcs.filter(n=>n.interact!==false),...(this.sceneId==='plaza'&&this.companion?[this.companion]:[]),...this.map.objects.filter(o=>o.interact)];let nearest=null,best=Infinity;
       for(const t of candidates){
         const point=t.character?{x:t.x,y:t.y}:{x:clamp(p.x,t.x,t.x+t.w),y:clamp(p.y,t.y,t.y+t.h)};
         const d=VG.distance(p,point);if(d>(t.character?30:24))continue;
@@ -131,7 +139,7 @@
     }
     cameraToPlayer(snap=false,dt=.016){
       if(!this.map)return;
-      const extra=this.dialogue.active?30:0;
+      const extra=this.declaration.active?40:this.dialogue.active?30:0;
       const x=clamp(this.player.x-192,0,Math.max(0,this.map.width-384));const y=clamp(this.player.y-108+extra,0,Math.max(0,this.map.height-216));
       const alpha=snap?1:Math.min(1,dt*7);this.camera.x+=(x-this.camera.x)*alpha;this.camera.y+=(y-this.camera.y)*alpha;
     }
@@ -152,13 +160,14 @@
       if(this.sceneId==='menu'){if(this.input.consume('interact'))this.newGame(!!this.save);return;}
       if(this.completedView)return;
       if(this.intertitle){this.intertitle.age+=dt;if(this.input.consume('interact'))this.advanceIntertitle();return;}
+      if(this.declaration.active){this.declaration.update(dt,this.input);this.cameraToPlayer(false,dt);return;}
       if(this.cinematic){const c=this.cinematic;c.time+=dt;c.update(c.time,c);if(c.time>=c.duration){this.cinematic=null;c.done?.();}this.cameraToPlayer(false,dt);return;}
       if(this.dialogue.active){this.dialogue.update(dt,this.input);this.cameraToPlayer(false,dt);return;}
       if(this.sceneId==='instagram'){this.phone.update(dt,this.input);return;}
       const before={x:this.player.x,y:this.player.y};this.player.update(dt,this.input.vector(),this.map,this.npcs);this.updateCompanion(dt);this.cameraToPlayer(false,dt);
       if(this.player.walking){this.stepTime+=dt;if(this.stepTime>.28){this.audio.play('footstep');this.stepTime=0;}}
       this.target=this.findTarget();$('interact-hint').classList.toggle('hidden',!this.target);
-      if(this.target)$('interact-label').textContent=this.target.marker==='card'?'Dar carta':this.target.character?'Hablar con '+this.target.name:this.target.id==='yogurt-door'?'Entrar':this.target.id==='exit'?'Salir':'Mirar';
+      if(this.target)$('interact-label').textContent=this.target.marker==='card'?'Dar carta':this.target.character?'Hablar con '+this.target.name:this.target.id==='yogurt-door'?'Entrar':this.target.id==='exit'?'Salir':this.target.type==='patio-door'||this.target.id==='door'&&this.sceneId==='birthday'?this.target.name:'Mirar';
       if(this.input.consume('interact'))this.interact();
       // Movement direction edges are only relevant during menus; never carry them into a choice.
       ['up','down','left','right'].forEach(a=>this.input.consume(a));

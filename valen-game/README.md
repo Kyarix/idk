@@ -37,6 +37,10 @@ Los controles táctiles aparecen al detectar un dispositivo táctil o una intera
 
 En los diálogos, la primera pulsación puede completar el texto que se está escribiendo; la siguiente avanza. No es necesario apretar rápidamente. Las elecciones cambian pequeñas respuestas, sin desviar la historia principal.
 
+La declaración del campo tiene una presentación propia, sin caja ni nombre: se avanza con E, Enter, Espacio, clic o tap. Su texto sigue en `VG.STORY.finalMessage`; la presentación está en `VG.Declaration` (`js/dialogue.js`) y las reglas `.declaration` de `style.css`. Después vuelve el diálogo habitual para el lemon pie.
+
+El cumpleaños incluye un patio nocturno opcional. La puerta permite ir y volver, y el guardado conserva las cartas y los saludos al cambiar entre `birthday` y `birthdayPatio`. Los invitados con `interact: false` son ambientales; quienes tienen `dialogue` usan el texto correspondiente de `data.js`.
+
 ## Estructura del proyecto
 
 ```text

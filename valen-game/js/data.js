@@ -14,7 +14,7 @@
   // Los colores también sirven para identificar a cada personaje a simple vista.
   VG.CHARACTERS = {
     valen:   { name: 'VALEN', skin: '#f1c5a2', hair: '#634534', eyes: '#583f30', shirt: '#759787', pants: '#40536a', sprite: 'assets/characters/valen.png' },
-    kiara:   { name: 'KIARA', skin: '#f0c3a1', hair: '#bc5d36', eyes: '#684a32', shirt: '#edb968', pants: '#765969', sprite: null },
+    kiara:   { name: 'KIARA', skin: '#f0c3a1', hair: '#bc5d36', eyes: '#684a32', shirt: '#edb968', pants: '#765969', sprite: 'assets/characters/kiara.png' },
     bene:    { name: 'BENE', skin: '#dba481', hair: '#433735', eyes: '#463a32', shirt: '#8e87ad', pants: '#45465b', sprite: null },
     chupe:   { name: 'CHUPE', skin: '#e7b28e', hair: '#73523a', eyes: '#4b3930', shirt: '#d87966', pants: '#4d5b66', sprite: null },
     friend1: { name: 'AMIGO', skin: '#cf9470', hair: '#3b3033', eyes: '#463530', shirt: '#82a5bd', pants: '#5c5261', sprite: null },
@@ -229,9 +229,11 @@
       { speaker: 'VALEN', text: '¿cómo así?' }
     ],
     afterKiss: [
-      { speaker: 'VALEN', text: 'perdón\npensé que querías' },
-      { speaker: 'KIARA', text: 'sí quería 😭\nsolo me puse nerviosa' },
-      { speaker: 'VALEN', text: 'ah, está bien. tranqui.' }
+      { speaker: 'KIARA', text: 'perdón que te corrí la cara' },
+      { speaker: 'KIARA', text: 'me puse nerviosa' },
+      { speaker: 'VALEN', text: 'pensé que no querías' },
+      { speaker: 'KIARA', text: 'noo' },
+      { speaker: 'KIARA', text: 'sí quería' }
     ],
     benchComfort: [
       { speaker: 'VALEN', text: '¿nos sentamos un rato?' },
@@ -315,6 +317,11 @@
       { speaker: 'VALEN', text: 'dato importante.' }
     ],
 
+    guestHalf: [{ speaker: 'INVITADO', text: 'creo que no conozco a la mitad de la gente' }],
+    guestCup: [{ speaker: 'INVITADO', text: '¿de quién era este vaso?' }],
+    guestFiveMinutes: [{ speaker: 'INVITADA', text: 'vine por cinco minutos.\nclaramente calculé mal.' }],
+    guestStanding: [{ speaker: 'INVITADO', text: 'llevo como veinte minutos parado acá' }],
+    patioNight: [{ kind: 'narrator', text: 'Está oscuro.\nConfirmado: sigue siendo de noche.' }],
     table: [
       { kind: 'narrator', text: 'Es una mesa.' },
       { kind: 'narrator', text: 'Sorprendentemente, no tiene relevancia para la trama.' }

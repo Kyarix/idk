@@ -67,7 +67,7 @@
       this.background(map, scene);
       if (scene === 'flowers') this.fieldDetails(map, cam);
       // Flat objects belong underneath actors even when their rectangle is tall.
-      const flatTypes = ['picnic', 'flower-bed', 'door', 'shop-door'];
+      const flatTypes = ['picnic', 'flower-bed', 'door', 'shop-door', 'patio-door'];
       for (const o of map.objects) if (flatTypes.includes(o.type)) this.object(o, scene);
       const actors = menu ? [] : [game.player, ...(game.npcs || [])];
       if (game.companion && !actors.includes(game.companion)) actors.push(game.companion);
@@ -88,7 +88,7 @@
       if (scene === 'birthday') this.partyLights(map);
       if (scene === 'plaza') this.birds();
       if (scene === 'flowers') this.particles(cam);
-      if (!menu && game.target && !game.dialogue?.active && !game.cinematic) this.indicator(game.target);
+      if (!menu && game.target && !game.dialogue?.active && !game.declaration?.active && !game.cinematic) this.indicator(game.target);
       if (game.cinematic && game.cinematic.heart) {
         const p = game.player || { x: 830, y: 278 };
         const k = game.companion || (game.npcs || []).find(n => n.id === 'kiara');
@@ -123,6 +123,7 @@
       const layer = document.createElement('canvas'); layer.width = map.width; layer.height = map.height;
       const original = this.ctx; this.ctx = layer.getContext('2d');
       if (scene === 'birthday' || scene === 'yogurt') this.interior(map, scene);
+      else if (scene === 'birthdayPatio') this.patio(map);
       else this.landscape(map, scene);
       this.ctx = original; this.ground.set(key, layer); original.drawImage(layer, 0, 0);
     }
@@ -161,6 +162,24 @@
       this.rect(x + 3, y + 3, w - 6, h - 6, bg);
       for (let i = 9; i < w - 9; i += 12) { this.rect(x + i, y + 7, 4, 2, trim); this.rect(x + i, y + h - 9, 4, 2, trim); }
       for (let i = 5; i < h; i += 6) { this.rect(x - 2, y + i, 2, 2, trim); this.rect(x + w, y + i, 2, 2, trim); }
+    }
+    patio(map) {
+      this.rect(0, 0, map.width, map.height, '#344c43');
+      for(let y=75;y<map.height;y+=8)for(let x=12;x<map.width-12;x+=8){
+        const n=hash(x,y,4);
+        if(n>.7)this.rect(x+2,y+3,2,2,'#456051');
+        else if(n<.25)this.rect(x+1,y+5,3,1,'#2b403c');
+      }
+      this.rect(129,70,127,188,'#58615b');
+      for(let y=80;y<258;y+=18)for(let x=130;x<256;x+=24){
+        this.rect(x,y,23,1,'#69716a');this.rect(x,y,1,17,'#48534d');
+      }
+      // Soft light from the open door; the lawn around it stays blue and dark.
+      const glow=this.ctx.createRadialGradient(192,89,8,192,101,115);
+      glow.addColorStop(0,'rgba(247,203,125,.34)');glow.addColorStop(1,'rgba(247,203,125,0)');
+      this.ctx.fillStyle=glow;this.ctx.fillRect(70,70,244,200);
+      this.rect(13,76,8,198,'#293e36');this.rect(361,76,10,198,'#293e36');
+      for(let y=95;y<270;y+=22){this.rect(16,y,4,9,'#496348');this.rect(363,y+4,5,8,'#496348');}
     }
     window(x, y) {
       this.rect(x, y, 47, 31, '#896951'); this.rect(x + 3, y + 3, 41, 25, '#dfbb89');
@@ -265,6 +284,24 @@
         case 'door':
           this.rect(x - 2, y, w + 4, h, '#69584a'); this.rect(x, y + 2, w, h - 2, '#9c8263');
           this.rect(x + 6, y + 4, w - 12, 5, '#c1a17a'); break;
+        case 'house-front':
+          this.rect(x,y,w,h,'#655d52');this.rect(x,y,w,17,'#29383b');
+          this.rect(x,y+17,w,4,'#39494a');this.rect(x,y+66,w,4,'#3c4540');
+          for(let yy=25;yy<64;yy+=12)this.rect(x,yy,w,1,'#73685a');
+          for(const wx of [58,284]){
+            this.rect(wx,30,42,29,'#3a433d');this.rect(wx+3,33,36,23,'#dfba7c');
+            this.rect(wx+6,35,30,19,'#ebcb91');this.rect(wx+20,32,2,25,'#877558');
+            this.rect(wx+3,43,36,2,'#877558');
+          }
+          this.rect(166,34,52,36,'#3b4238');this.rect(170,38,44,32,'#dbb279');
+          this.rect(175,42,34,28,'#eccb93');break;
+        case 'patio-door':
+          this.rect(x-2,y,w+4,h,'#62645a');this.rect(x,y+1,w,h-2,'#b6a582');
+          this.rect(x+4,y+5,w-8,2,'#dbc69b');this.rect(x+4,y+13,w-8,2,'#8e8d72');break;
+        case 'fence':
+          this.rect(x,y,w,h,'#374740');
+          if(w>h){this.rect(x,y+2,w,2,'#6f7763');for(let xx=x+6;xx<x+w;xx+=14)this.rect(xx,y,3,h,'#58634f');}
+          else{this.rect(x+3,y,2,h,'#6f7763');for(let yy=y+8;yy<y+h;yy+=17)this.rect(x,yy,w,3,'#58634f');}break;
         case 'bench':
           this.shadow(x - 2, y + h - 1, w + 4, 8);
           this.rect(x + 6, y, 4, h + 2, '#5d6558'); this.rect(x + w - 10, y, 4, h + 2, '#5d6558');

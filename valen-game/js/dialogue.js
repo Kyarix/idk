@@ -35,4 +35,34 @@
     close(silent=false){const callback=this.onEnd,result=this.results;this.active=false;this.onEnd=null;this.el.classList.add('hidden');document.body.classList.remove('dialogue-active');if(!silent&&callback)callback(result);}
   }
   VG.Dialogue=Dialogue;
+  // This presentation belongs only to the final message. It deliberately has
+  // no speaker label, border, choices or automatic advancement.
+  class Declaration {
+    constructor(game){
+      this.game=game;this.active=false;this.el=document.getElementById('declaration');
+      this.textEl=document.getElementById('declaration-text');
+      this.el.addEventListener('click',()=>{this.game.focus();this.advance();});
+    }
+    open(pages,onEnd){
+      this.pages=pages;this.index=0;this.onEnd=onEnd;this.active=true;
+      this.el.classList.remove('hidden');document.body.classList.add('declaration-active');this.show();
+    }
+    show(){
+      const page=this.pages[this.index];if(!page){this.close();return;}
+      this.age=0;this.textEl.textContent=page.text;
+      this.textEl.classList.remove('fragment-in');void this.textEl.offsetWidth;
+      this.textEl.classList.add('fragment-in');
+    }
+    advance(){
+      if(!this.active||this.game.paused||this.game.transition||this.age<.28)return;
+      this.game.input.clear();this.index++;this.show();
+    }
+    update(dt,input){this.age+=dt;if(input.consume('interact'))this.advance();}
+    close(silent=false){
+      const callback=this.onEnd;this.onEnd=null;this.active=false;
+      this.el.classList.add('hidden');document.body.classList.remove('declaration-active');
+      if(!silent&&callback)callback();
+    }
+  }
+  VG.Declaration=Declaration;
 })(window.VG=window.VG||{});

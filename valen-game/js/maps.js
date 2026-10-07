@@ -8,7 +8,7 @@
   const wall = (id, x, y, w, h) => ({ id, type: 'wall', x, y, w, h, solid: true });
   V.MAPS = {
     birthday: {
-      title: 'El cumpleaños', width: 576, height: 352, spawn: { x: 112, y: 240 },
+      title: 'El cumpleaños', width: 576, height: 352, spawn: { x: 194, y: 274 },
       objects: [
         wall('wall-top', 0, 0, 576, 54), wall('wall-left', 0, 0, 16, 352), wall('wall-right', 560, 0, 16, 352),
         wall('wall-bottom-left', 0, 338, 266, 14), wall('wall-bottom-right', 310, 338, 266, 14),
@@ -24,21 +24,58 @@
         { id: 'plant-2', type: 'plant', x: 530, y: 295, w: 16, h: 20, solid: true },
         { id: 'kitchen', type: 'kitchen', x: 423, y: 265, w: 126, h: 38, solid: true },
         { id: 'speaker', type: 'speaker', x: 191, y: 68, w: 16, h: 24, solid: true, interact: true },
-        { id: 'door', type: 'door', x: 268, y: 326, w: 40, h: 16, interact: true }
+        { id: 'door', type: 'door', name: 'Salir al patio', x: 268, y: 326, w: 40, h: 16, interact: true }
       ],
       npcs: [
-        { id: 'bene', character: 'bene', name: 'Bene', x: 158, y: 236 },
+        // The close friends face an open, irregular semicircle. Valen starts at its edge.
+        { id: 'bene', character: 'bene', name: 'Bene', x: 246, y: 218, dir: 'left', group: true },
         { id: 'chupe', character: 'chupe', name: 'Chupe', x: 315, y: 116 },
-        { id: 'friend1', character: 'friend1', name: 'Un amigo', x: 256, y: 216 },
-        { id: 'friend2', character: 'friend2', name: 'Una amiga', x: 413, y: 192 },
+        { id: 'friend1', character: 'friend1', name: 'Un amigo', x: 185, y: 194, dir: 'down', group: true },
+        { id: 'friend2', character: 'friend2', name: 'Una amiga', x: 121, y: 246, dir: 'right', group: true },
+        { id: 'close-friend3', character: 'friend3', name: 'Un amigo', x: 132, y: 207, dir: 'right', group: true },
+        { id: 'close-friend4', character: 'friend4', name: 'Una amiga', x: 262, y: 264, dir: 'left', group: true },
         { id: 'kiara', character: 'kiara', name: 'Kiara', x: 460, y: 104 },
-        { id: 'guest1', character: 'friend4', name: 'Una amiga', x: 171, y: 119 },
-        { id: 'guest2', character: 'friend3', name: 'Un amigo', x: 368, y: 213 },
-        { id: 'guest3', character: 'friend3', name: 'Un amigo', x: 504, y: 191 },
-        { id: 'guest4', character: 'friend4', name: 'Una amiga', x: 211, y: 288 },
-        { id: 'guest5', character: 'friend2', name: 'Una amiga', x: 349, y: 302 }
+        // Most guests are scenery with collision, rather than extra conversations.
+        { id: 'guest1', character: 'friend4', name: 'Una invitada', x: 171, y: 119, dir: 'left', ambient: true, interact: false },
+        { id: 'guest2', character: 'friend3', name: 'Un invitado', x: 368, y: 213, dir: 'left', ambient: true, dialogue: 'guestCup' },
+        { id: 'guest3', character: 'friend3', name: 'Un invitado', x: 504, y: 191, dir: 'up', ambient: true, interact: false },
+        { id: 'guest4', character: 'friend4', name: 'Una invitada', x: 71, y: 292, dir: 'right', ambient: true, dialogue: 'guestFiveMinutes' },
+        { id: 'guest5', character: 'friend2', name: 'Una invitada', x: 349, y: 302, dir: 'left', ambient: true, interact: false },
+        { id: 'guest6', character: 'friend1', name: 'Un invitado', x: 279, y: 92, dir: 'right', ambient: true, interact: false },
+        { id: 'guest7', character: 'friend3', name: 'Un invitado', x: 143, y: 117, dir: 'right', ambient: true, dialogue: 'guestHalf' },
+        { id: 'guest8', character: 'friend2', name: 'Una invitada', x: 327, y: 195, dir: 'right', ambient: true, interact: false },
+        { id: 'guest9', character: 'friend4', name: 'Una invitada', x: 336, y: 243, dir: 'up', ambient: true, interact: false },
+        { id: 'guest10', character: 'friend1', name: 'Un invitado', x: 518, y: 333, dir: 'left', ambient: true, interact: false },
+        { id: 'guest11', character: 'friend3', name: 'Un invitado', x: 322, y: 301, dir: 'right', ambient: true, interact: false },
+        { id: 'guest12', character: 'friend2', name: 'Una invitada', x: 98, y: 313, dir: 'left', ambient: true, interact: false },
+        { id: 'guest13', character: 'friend4', name: 'Una invitada', x: 508, y: 135, dir: 'right', ambient: true, interact: false },
+        { id: 'guest14', character: 'friend1', name: 'Un invitado', x: 543, y: 123, dir: 'left', ambient: true, interact: false }
       ],
       triggers: [{ id: 'kiara-thought', x: 392, y: 72, w: 110, h: 91 }]
+    },
+    birthdayPatio: {
+      title: 'El patio', width: 384, height: 288, spawn: { x: 192, y: 115 },
+      objects: [
+        { id: 'house-front', type: 'house-front', x: 0, y: 0, w: 384, h: 70, solid: true },
+        { id: 'house-door', type: 'patio-door', name: 'Volver a la casa', x: 168, y: 68, w: 48, h: 22, interact: true },
+        { id: 'fence-left', type: 'fence', x: 0, y: 70, w: 12, h: 218, solid: true },
+        { id: 'fence-right', type: 'fence', x: 372, y: 70, w: 12, h: 218, solid: true },
+        { id: 'fence-bottom', type: 'fence', x: 0, y: 277, w: 384, h: 11, solid: true },
+        { id: 'patio-table', type: 'table', x: 43, y: 204, w: 58, h: 22, solid: true, interact: true },
+        { id: 'patio-chair1', type: 'chair', x: 34, y: 240, w: 16, h: 16, solid: true },
+        { id: 'patio-chair2', type: 'chair', x: 110, y: 202, w: 16, h: 16, solid: true },
+        { id: 'patio-plant1', type: 'plant', x: 25, y: 100, w: 16, h: 20, solid: true },
+        { id: 'patio-plant2', type: 'plant', x: 340, y: 92, w: 16, h: 20, solid: true },
+        { id: 'patio-lamp', type: 'lamp', x: 314, y: 136, w: 9, h: 10, solid: true, interact: true }
+      ],
+      npcs: [
+        { id: 'patio-guest1', character: 'friend1', name: 'Un invitado', x: 70, y: 168, dir: 'right', ambient: true, dialogue: 'guestStanding' },
+        { id: 'patio-guest2', character: 'friend4', name: 'Una invitada', x: 105, y: 162, dir: 'left', ambient: true, interact: false },
+        { id: 'patio-guest3', character: 'friend3', name: 'Un invitado', x: 271, y: 205, dir: 'right', ambient: true, interact: false },
+        { id: 'patio-guest4', character: 'friend2', name: 'Una invitada', x: 306, y: 223, dir: 'up', ambient: true, interact: false },
+        { id: 'patio-guest5', character: 'friend4', name: 'Una invitada', x: 340, y: 203, dir: 'left', ambient: true, interact: false },
+        { id: 'patio-guest6', character: 'friend1', name: 'Un invitado', x: 226, y: 247, dir: 'up', ambient: true, interact: false }
+      ], triggers: []
     },
     plaza: {
       title: 'La plaza', width: 768, height: 480, spawn: { x: 60, y: 390 },
