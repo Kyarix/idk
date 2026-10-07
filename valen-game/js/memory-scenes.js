@@ -28,18 +28,32 @@
     return k;
   }
   function bedPair(g, pose = 'lying') { return pair(g, 173, 132, 175, 153, pose); }
-  function closeAndKiss(g, done) {
+  function closeAndKiss(g, done, options = {}) {
+    const secondKiss = options.secondKiss !== false;
+    const hug = options.hug !== false;
     const k = g.companion;
     const startY = k.y;
-    g.animate('memory-kisses', 5.8, (time, c) => {
-      k.y = lerp(startY, 147, time / 1.1);
+    const targetY = options.targetY ?? 147;
+    g.animate('memory-kisses', secondKiss ? 5.8 : 2.6, (time, c) => {
+      k.y = lerp(startY, targetY, time / 1.1);
       g.player.dir = 'right'; k.dir = 'left';
-      c.heart = (time > 1.25 && time < 2.15) || (time > 3.05 && time < 3.9);
+      c.heart = (time > 1.25 && time < 2.15) || (secondKiss && time > 3.05 && time < 3.9);
       c.heartAt = { x: 176, y: 131 };
       if (time > 1.25 && !c.firstKiss) { c.firstKiss = true; g.audio.play('kiss'); }
-      if (time > 3.05 && !c.secondKiss) { c.secondKiss = true; g.audio.play('kiss'); }
-      if (time > 4.1) g.player.hugging = true;
+      if (secondKiss && time > 3.05 && !c.secondKiss) { c.secondKiss = true; g.audio.play('kiss'); }
+      if (hug && time > 4.1) g.player.hugging = true;
     }, done);
+  }
+  function smallKiss(g, done) {
+    g.animate('memory-small-kiss', 1.35, (time, c) => {
+      c.heart = time > .2 && time < 1.1;
+      c.heartAt = { x: (g.player.x + g.companion.x) / 2, y: g.player.y - 18 };
+      if (time > .2 && !c.kiss) { c.kiss = true; g.audio.play('kiss'); }
+    }, done);
+  }
+  function thoughtsSequence(g, keys, done) {
+    if (!keys.length) { if (done) done(); return; }
+    g.thoughts(keys[0], () => thoughtsSequence(g, keys.slice(1), done));
   }
   function walkComment(g, dt, flag, distance, dialogue) {
     if (!g.player.walking || g.flags[flag]) return;
@@ -80,7 +94,7 @@
   Object.assign(VG.SCENES, {
     memMovieLiving: scene('movie', 'memoryApartment', {
       enter(g) {
-        g.map.night = true; pair(g, 174, 187, 212, 187);
+        g.map.night = false; pair(g, 174, 187, 212, 187);
         goal(g, '');
         g.animate('movie', 2.7, () => {}, () => g.say('memMovieStart', () => {
           stand(g, 174, 199); goal(g, 'Seguí la película en la notebook', ['notebook']);
@@ -100,7 +114,7 @@
     }, 'flowers'),
 
     memMovieBedroom: scene('movie', 'memoryBedroom', {
-      enter(g) { g.map.night = true; withKiara(g); g.say('memMovieUpstairs', () => goal(g, 'Acomodá la notebook al lado de la cama', ['notebook'])); },
+      enter(g) { g.map.night = false; withKiara(g); g.say('memMovieUpstairs', () => goal(g, 'Acomodá la notebook al lado de la cama', ['notebook'])); },
       interact(g, t) {
         if (t.id === 'notebook') {
           g.say('memMovieSetNotebook', () => { g.flags.movieNotebookReady = true; goal(g, 'Acomodate con Kiara en la cama', ['bed']); }); return;
@@ -108,9 +122,21 @@
         if (t.id === 'bed') {
           if (!g.flags.movieNotebookReady) { g.say('memMovieBedroomWait'); return; }
           bedPair(g); goal(g, '');
-          g.animate('movie', 4, () => {}, () => g.say('memMovieComfort', () => closeAndKiss(g, () =>
-            g.say('memMovieContinue', () => g.animate('movie', 4.5, () => { g.player.hugging = true; }, () => g.finishMemory()))
-          ))); return;
+          g.animate('movie', 4, () => {}, () => g.say('memMovieComfort', () =>
+            g.animate('movie-pause', .75, () => {}, () => g.say('memMovieAh', () =>
+              g.animate('movie-pause', .55, () => {}, () => g.say('memMovieConvenient', () =>
+                closeAndKiss(g, () => g.say('memMovieContinue', () => smallKiss(g, () =>
+                  g.animate('movie', 1.8, () => {}, () => g.say('memMovieNear', () =>
+                    g.animate('movie', 4.5, () => {}, () => g.say('memMovieEnd', () =>
+                      g.animate('movie-heart', 1.4, (time, c) => {
+                        c.heart = time < 1.1; c.heartAt = { x: 181, y: 126 };
+                      }, () => g.finishMemory())
+                    ))
+                  ))
+                )), { secondKiss: false, hug: false })
+              ))
+            ))
+          )); return;
         }
         g.say('memBedroomWindow');
       }
@@ -149,10 +175,14 @@
             Object.assign(g.companion, { x: 369, y: 139, pose: 'pc', dir: 'up', holdingUSB: false });
             Object.assign(g.player, { x: 323, y: 144, dir: 'right' });
             goal(g, '');
-            g.animate('installation', 6, (time, c) => { c.progress = ease(time / 5.4); c.label = 'Instalando Windows'; }, () => {
+            g.animate('installation', 3, (time, c) => {
+              c.progress = ease(time / 5.4); c.label = 'Instalando Windows';
+            }, () => g.say('memTechInstallWait', () => g.animate('installation', 3, (time, c) => {
+              c.progress = .5 + ease(time / 5.4); c.label = 'Instalando Windows';
+            }, () => {
               if (pc) pc.status = 'ready'; g.flags.techInstalled = true;
               g.say('memTechInstalled', () => { stand(g, 322, 151); goal(g, 'Salgan a caminar', ['exit']); });
-            });
+            })));
           }); return;
         }
         if (t.id === 'exit') { if (g.flags.techInstalled) g.go('memTechWalk', { position: { x: 529, y: 167 } }); else g.say('memTechNotFinished'); return; }
@@ -238,7 +268,10 @@
     }, 'birthday'),
 
     memDinnerApartment: scene('dinner', 'memoryApartment', {
-      enter(g) { g.map.night = true; withKiara(g); g.say('memDinnerApartment', () => goal(g, 'Suban a la habitación', ['stairs'])); },
+      enter(g) {
+        g.map.night = true; pair(g, 174, 187, 196, 187, 'standing');
+        g.say('memDinnerApartment', () => closeAndKiss(g, () => g.say('memDinnerAfterKiss', () => goal(g, 'Suban a la habitación', ['stairs'])), { hug: false, targetY: 187 }));
+      },
       interact(g, t) { if (t.id === 'stairs') g.go('memDinnerBedroom'); else g.say('memDinnerSofa'); }
     }, 'flowers'),
 
@@ -255,10 +288,10 @@
 
     memNextMorning: scene('nextDay', 'memoryBedroom', {
       enter(g) {
-        g.map.night = false; bedPair(g); g.player.hugging = true; goal(g, '');
+        g.map.night = false; bedPair(g); g.player.hugging = false; g.companion.hugging = false; goal(g, '');
         closeAndKiss(g, () => g.say('memNextMorning', () => {
           stand(g, 275, 204); goal(g, 'Bajen al living', ['stairs']);
-        }));
+        }), { hug: false });
       },
       interact(g, t) { if (t.id === 'stairs') g.go('memNextApartment'); else g.say('memBedroomWindow'); }
     }, 'flowers'),
@@ -275,12 +308,13 @@
           const k = g.npc('kiara');
           g.say('memNextKitchen', () => {
             Object.assign(g.player, { x: 134, y: 125, pose: 'cook', dir: 'up' }); goal(g, '');
-            g.animate('morning', 6, () => { if (k) k.pose = 'pc'; }, () => g.say('memNextStudy', () => g.say('memNextInvite', () => {
-              g.flags.nextCooked = true; clearPose(g.player); if (k) { clearPose(k); k.dir = 'left'; }
-              g.animate('leave-desk', 2.2, time => { if (k) { k.x = lerp(369, 158, time / 2); k.y = lerp(139, 125, time / 2); k.walking = time < 2; } }, () => {
-                withKiara(g); stand(g); goal(g, 'Salgan para tomar el colectivo', ['exit']);
-              });
-            })));
+            g.animate('morning', 6, () => { if (k) k.pose = 'pc'; }, () => g.say('memNextStudy', () =>
+              g.say('memNextCare', () => g.thoughts('memNextThought', () => g.say('memNextInvite', () => {
+                g.flags.nextCooked = true; clearPose(g.player); if (k) { clearPose(k); k.dir = 'left'; }
+                g.animate('leave-desk', 2.2, time => { if (k) { k.x = lerp(369, 158, time / 2); k.y = lerp(139, 125, time / 2); k.walking = time < 2; } }, () => {
+                  withKiara(g); stand(g); goal(g, 'Salgan para tomar el colectivo', ['exit']);
+                });
+              })))));
           }); return;
         }
         if (t.id === 'exit') { if (g.flags.nextCooked) g.go('memNextTransit'); else g.say('memNextBeforeCook'); return; }
@@ -308,6 +342,7 @@
       },
       update(g, dt) {
         if (!g.flags.tiramisuShared) walkComment(g, dt, 'townWalkTalk', 160, 'memTownWalk');
+        if (!g.flags.tiramisuShared) walkComment(g, dt, 'townWalkTalkAgain', 430, 'memTownWalkAgain');
         if (g.flags.sebiInvited) {
           const s = g.npc('sebi'); if (s && s.x < 806) { s.x = Math.min(806, s.x + dt * 38); s.walking = true; s.dir = 'right'; } else if (s) s.walking = false;
         }
@@ -319,6 +354,8 @@
         }
         if (t.id === 'sebi') {
           if (g.flags.sebiInvited) { g.say('memSebiAgain'); return; }
+          g.player.dir = 'right';
+          const k = g.npc('kiara'); if (k) k.dir = 'left';
           g.say('memSebiInvite', () => { g.flags.sebiInvited = true; goal(g, 'Vayan con Sebi hasta la cancha', ['pitch-door']); }); return;
         }
         if (t.id === 'pitch-door') { if (g.flags.sebiInvited) g.go('memNextPitch'); else g.say('memTownKeepWalking'); return; }
@@ -332,9 +369,11 @@
         if (t.id === 'tiramisu-table') {
           if (g.flags.tiramisuShared) { g.say('memTiramisuAfter'); return; }
           cafeSeat(g, 'tiramisu-table', 'tiramisu'); goal(g, '');
-          g.say('memTiramisu', () => quietMeal(g, () => g.say('memTiramisuAfter', () => {
+          g.say('memTiramisu', () => quietMeal(g, () => g.say('memTiramisuAfter', () => g.animate('tiramisu-heart', 1.5, (time, c) => {
+            c.heart = time < 1.2; c.heartAt = { x: 241, y: 168 };
+          }, () => {
             g.flags.tiramisuShared = true; stand(g, 215, 204); goal(g, 'Vuelvan a pasear por el pueblo', ['exit']);
-          }))); return;
+          })))); return;
         }
         if (t.id === 'exit') { if (g.flags.tiramisuShared) g.go('memNextTown', { position: { x: 448, y: 190 } }); else g.say('memMamaluWait'); return; }
         g.say('memCafeMenu');
@@ -373,14 +412,20 @@
       interact(g, t) {
         if (t.id === 'phone') { g.thoughts('memKiaraPhone'); return; }
         if (t.id === 'desk') { g.thoughts('memKiaraDesk'); return; }
+        if (t.id === 'window') { g.thoughts('memKiaraWindow'); return; }
         if (t.id !== 'bed') return;
         const from = { x: g.player.x, y: g.player.y };
         g.animate('lie-down', 2.4, time => {
           g.player.x = lerp(from.x, 173, time / 1.7); g.player.y = lerp(from.y, 150, time / 1.7);
           if (time > 1.7) g.player.pose = 'lying';
-        }, () => g.thoughts('memKiaraThoughts', () => g.animate('settle', 2.5, time => {
-          g.player.y = 150 + Math.min(time, 1.5); g.player.pose = 'lying'; g.player.dir = 'left';
-        }, () => g.thoughts('memKiaraLast', () => g.finishMemory()))));
+        }, () => thoughtsSequence(g, [
+          'memKiaraThoughts', 'memKiaraNervous', 'memKiaraNormal', 'memKiaraKnow',
+          'memKiaraMore', 'memKiaraExcited', 'memKiaraClose', 'memKiaraUs', 'memKiaraDays'
+        ], () => g.animate('long-thought-pause', 1.8, () => {}, () => g.thoughts('memKiaraLast', () =>
+          g.thoughts('memKiaraReflect', () => g.thoughts('memKiaraFinal', () => g.animate('settle', 2.5, time => {
+            g.player.y = 150 + Math.min(time, 1.5); g.player.pose = 'lying'; g.player.dir = 'left';
+          }, () => g.finishMemory())))
+        ))));
       }
     }, 'flowers')
   });

@@ -46,21 +46,34 @@
         { text: 'estoy reconociendo el terreno', value: 'explore', reply: [{ speaker: 'BENE', text: 'es un living, Valen.' }] },
         { text: 'depende. ¿hay comida?', value: 'food', reply: [{ speaker: 'BENE', text: 'había. esa es toda la información que tengo.' }] }
       ] },
-      { speaker: 'BENE', text: 'andá a saludar. después hacemos algo con las cartas.' }
+      { speaker: 'BENE', text: 'andá a saludar. después hacemos algo con las cartas.' },
+      { speaker: 'BENE', text: 'qué hacés' },
+      { speaker: 'VALEN', text: 'nada' },
+      { speaker: 'BENE', text: 'excelente aporte a la conversación' },
+      { speaker: 'VALEN', text: 'gracias' }
     ],
     beneAgain: [
       { speaker: 'BENE', text: 'sigo acá. mi personaje tiene un presupuesto de movimiento limitado.' },
-      { speaker: 'VALEN', text: 'se nota.' }
+      { speaker: 'VALEN', text: 'se nota.' },
+      { speaker: 'BENE', text: 'seguís acá' },
+      { speaker: 'VALEN', text: 'vos también' },
+      { speaker: 'BENE', text: 'buen punto' }
     ],
     friend1: [
       { speaker: 'AMIGO', text: 'estoy cuidando esta silla.' },
       { speaker: 'VALEN', text: '¿para alguien?' },
-      { speaker: 'AMIGO', text: 'por ahora para mi campera. tiene una noche difícil.' }
+      { speaker: 'AMIGO', text: 'por ahora para mi campera. tiene una noche difícil.' },
+      { speaker: 'AMIGO', text: 'hay demasiada gente acá' },
+      { speaker: 'VALEN', text: 'es una casa chica' },
+      { speaker: 'AMIGO', text: 'eso no ayuda' }
     ],
     friend2: [
       { speaker: 'AMIGA', text: 'vine a buscar un vaso y me quedé charlando.' },
       { speaker: 'VALEN', text: '¿y el vaso?' },
-      { speaker: 'AMIGA', text: 'no compliquemos las cosas.' }
+      { speaker: 'AMIGA', text: 'no compliquemos las cosas.' },
+      { speaker: 'AMIGA', text: 'yo ya perdí la noción de quién conoce a quién' },
+      { speaker: 'VALEN', text: 'hacé como que conocés a todos' },
+      { speaker: 'AMIGA', text: 'es exactamente lo que estoy haciendo' }
     ],
     friend3: [
       { speaker: 'AMIGO', text: '¿alguien sabe dónde se deja esto?' },
@@ -83,7 +96,10 @@
       { speaker: 'VALEN', text: 'hola.' }
     ],
     kiaraThought: [
-      { speaker: 'KIARA', kind: 'thought', text: 'Qué ganas de hablarle...\npero no me animo.' }
+      { speaker: 'KIARA', kind: 'thought', text: 'Qué ganas de hablarle...\npero no me animo.' },
+      { speaker: 'KIARA', kind: 'thought', text: 'quiero hablarle...' },
+      { kind: 'narrator', text: '...' },
+      { speaker: 'KIARA', kind: 'thought', text: 'pero me da vergüenza' }
     ],
     cardsIntro: [
       { speaker: 'BENE', text: 'che, juguemos al de las preguntas.' },
@@ -96,12 +112,18 @@
     ],
     cardBene: [
       { speaker: 'VALEN', text: 'tomá.' },
-      { speaker: 'BENE', text: 'gracias. espero que esta venga con la respuesta.' }
+      { speaker: 'BENE', text: 'gracias. espero que esta venga con la respuesta.' },
+      { speaker: 'BENE', text: 'dame una buena' },
+      { speaker: 'VALEN', text: 'no funciona así' },
+      { speaker: 'BENE', text: 'entonces para qué repartís vos' }
     ],
     cardFriend1: [
       { speaker: 'AMIGO', text: '¿hay que decir la verdad?' },
       { speaker: 'VALEN', text: 'creo que esa es la idea.' },
-      { speaker: 'AMIGO', text: 'arrancamos mal.' }
+      { speaker: 'AMIGO', text: 'arrancamos mal.' },
+      { speaker: 'AMIGO', text: 'me tocó una horrible' },
+      { speaker: 'VALEN', text: 'ni la leíste' },
+      { speaker: 'AMIGO', text: 'la energía era horrible' }
     ],
     cardFriend2: [
       { speaker: 'VALEN', text: 'una para vos.' },
@@ -109,7 +131,8 @@
     ],
     cardKiara: [
       { speaker: 'VALEN', text: 'tomá.' },
-      { speaker: 'KIARA', text: 'gracias.' }
+      { speaker: 'KIARA', text: 'gracias.' },
+      { speaker: 'VALEN', text: 'de nada' }
     ],
     cardKiaraWait: [
       { speaker: 'VALEN', text: 'reparto por acá y te doy una.' },
@@ -138,7 +161,9 @@
       { speaker: 'KIARA', text: 'holaa' },
       { speaker: 'KIARA', text: 'quién sos? 😭' },
       { speaker: 'VALEN', text: 'soy del cumple de Chupe JAJA' },
-      { speaker: 'KIARA', text: 'aaah JAJA' }
+      { speaker: 'KIARA', text: 'aaah JAJA' },
+      { speaker: 'KIARA', text: 'AAAA' },
+      { speaker: 'KIARA', text: 'ya sé quién sos' }
     ],
     instagramLater: [
       { kind: 'narrator', text: 'unos cuantos mensajes después...' }
@@ -149,6 +174,8 @@
         { text: 'me copa', value: 'yes', reply: [{ speaker: 'KIARA', text: 'buenoo' }] },
         { text: 'sí, de una', value: 'sure', reply: [{ speaker: 'KIARA', text: 'dalee' }] }
       ] },
+      { speaker: 'KIARA', text: 'igual hay un pequeño problema' },
+      { speaker: 'VALEN', text: 'qué pasó' },
       { speaker: 'KIARA', text: 'igual ahora estoy enferma 💀\ncuando me recupere' },
       { speaker: 'VALEN', text: 'JAJA bueno, recuperate primero' }
     ],
@@ -169,6 +196,12 @@
       { speaker: 'KIARA', text: '¿caminamos?' },
       { speaker: 'VALEN', text: 'dale.' }
     ],
+    plazaHelloAfter: [
+      { kind: 'narrator', text: 'Un comienzo impecable.' },
+      { speaker: 'KIARA', text: 'JAJA' },
+      { speaker: 'VALEN', text: 'qué' },
+      { speaker: 'KIARA', text: 'nada' }
+    ],
     walk1: [
       { speaker: 'KIARA', text: '¿por dónde vamos?', choices: [
         { text: 'por donde haya sombra', value: 'shade', reply: [{ speaker: 'KIARA', text: 'criterio sólido.' }] },
@@ -181,6 +214,24 @@
       { speaker: 'KIARA', text: 'sí. ya casi reconocemos todos los árboles.' },
       { speaker: 'VALEN', text: 'ese es el de recién.' },
       { speaker: 'KIARA', text: 'gran avance.' }
+    ],
+    walkMission: [
+      { speaker: 'KIARA', text: 'menos mal que ya no estoy enferma' },
+      { speaker: 'VALEN', text: 'la misión fue completada' },
+      { speaker: 'KIARA', text: 'qué misión' },
+      { speaker: 'VALEN', text: 'nada' }
+    ],
+    walkWeather: [
+      { speaker: 'KIARA', text: 'está lindo el día' },
+      { speaker: 'VALEN', text: 'sí' },
+      { speaker: 'KIARA', text: 'qué conversación profunda' },
+      { speaker: 'VALEN', text: 'recién estamos empezando' },
+      { speaker: 'KIARA', text: 'bueno te perdono' }
+    ],
+    walkComfort: [
+      { speaker: 'VALEN', text: 'estás cómoda?' },
+      { speaker: 'KIARA', text: 'sisi' },
+      { speaker: 'VALEN', text: 'bueno' }
     ],
     yogurtInvite: [
       { speaker: 'KIARA', text: 'vamos por yogurt?' },
@@ -219,6 +270,21 @@
       { speaker: 'KIARA', text: '¿volvemos a la plaza?' },
       { speaker: 'VALEN', text: 'sí, vamos.' }
     ],
+    yogurtReaction: [
+      { speaker: 'KIARA', text: 'interesante elección' },
+      { speaker: 'VALEN', text: 'eso sonó a crítica' },
+      { speaker: 'KIARA', text: 'yo no dije nada' },
+      { speaker: 'VALEN', text: 'pero lo pensaste' },
+      { speaker: 'KIARA', text: 'puede ser' }
+    ],
+    afterYogurtWalk: [
+      { speaker: 'KIARA', text: 'me gusta caminar así' },
+      { speaker: 'VALEN', text: 'así cómo' },
+      { speaker: 'KIARA', text: 'no sé' },
+      { speaker: 'KIARA', text: 'sin hacer nada en particular' },
+      { speaker: 'VALEN', text: 'está bueno' },
+      { speaker: 'KIARA', text: 'sisi' }
+    ],
     benchConfession: [
       { speaker: 'KIARA', text: 'igual te tengo que contar algo' },
       { speaker: 'KIARA', text: 'en el cumpleaños...\ncuando estabas repartiendo las cartas' },
@@ -229,11 +295,54 @@
       { speaker: 'VALEN', text: '¿cómo así?' }
     ],
     afterKiss: [
+      { speaker: 'VALEN', text: 'perdón\npensé que querías' },
+      { speaker: 'KIARA', text: 'sí quería 😭\nsolo me puse nerviosa' },
+      { speaker: 'VALEN', text: 'ah, está bien. tranqui.' }
+    ],
+    afterKissMore: [
       { speaker: 'KIARA', text: 'perdón que te corrí la cara' },
       { speaker: 'KIARA', text: 'me puse nerviosa' },
       { speaker: 'VALEN', text: 'pensé que no querías' },
       { speaker: 'KIARA', text: 'noo' },
-      { speaker: 'KIARA', text: 'sí quería' }
+      { speaker: 'KIARA', text: 'sí quería' },
+      { speaker: 'VALEN', text: 'ah bueno' },
+      { speaker: 'VALEN', text: 'me habías asustado un poquito JAJA' },
+      { speaker: 'KIARA', text: 'perdón 😭' },
+      { speaker: 'VALEN', text: 'eh, tranqui' },
+      { speaker: 'VALEN', text: 'no pasa nada' },
+      { speaker: 'KIARA', text: 'es que me pongo nerviosa' },
+      { speaker: 'VALEN', text: 'está bien' },
+      { speaker: 'VALEN', text: 'vamos despacio' }
+    ],
+    benchCheckIn: [
+      { speaker: 'VALEN', text: '¿así estás bien?' },
+      { speaker: 'KIARA', text: 'sí' },
+      { speaker: 'VALEN', text: '¿segura?' },
+      { speaker: 'KIARA', text: 'sisi' },
+      { speaker: 'KIARA', text: 'estoy bien' },
+      { speaker: 'VALEN', text: 'bueno' },
+      { speaker: 'VALEN', text: 'entonces me quedo acá' }
+    ],
+    benchThanks: [
+      { speaker: 'KIARA', text: 'gracias' },
+      { speaker: 'VALEN', text: 'por qué' },
+      { speaker: 'KIARA', text: 'por no hacer que sea raro' },
+      { speaker: 'VALEN', text: 'ya dimos la mano para saludarnos' },
+      { speaker: 'VALEN', text: 'más raro que eso no se puede' },
+      { speaker: 'KIARA', text: 'CALLATE JAJA' }
+    ],
+    benchAwkward: [
+      { speaker: 'KIARA', text: 'qué vergüenza' },
+      { speaker: 'VALEN', text: 'por qué' },
+      { speaker: 'KIARA', text: 'no sé 😭' },
+      { speaker: 'VALEN', text: 'literalmente me acabás de decir que querías besarme' },
+      { speaker: 'KIARA', text: 'VALEN' },
+      { speaker: 'VALEN', text: 'qué' },
+      { speaker: 'KIARA', text: 'callate' }
+    ],
+    benchConsent: [
+      { speaker: 'VALEN', text: '¿puedo?' },
+      { speaker: 'KIARA', text: 'sí' }
     ],
     benchComfort: [
       { speaker: 'VALEN', text: '¿nos sentamos un rato?' },
@@ -317,19 +426,6 @@
       { speaker: 'VALEN', text: 'dato importante.' }
     ],
 
-    plazaLongStart: [{speaker:'KIARA',text:'podemos dar la vuelta por ese sendero.'},{speaker:'VALEN',text:'dale, vamos.'}],
-    walkBeforeShop: [{speaker:'KIARA',text:'demos una vuelta primero.\nel local no se va a ir.'}],
-    walkNotTogether: [{kind:'narrator',text:'Primero encontrá a Kiara.\nYa está esperando en la plaza.'}],
-    quietBeforeYogurt: [{speaker:'KIARA',text:'podemos ir para allá después.\n¿primero el yogurt?'}],
-    quietStart: [{speaker:'KIARA',text:'por acá hay menos gente.'},{speaker:'VALEN',text:'vamos por acá entonces.'}],
-    quietWalk1: [{speaker:'VALEN',text:'está más tranquilo este lado.'},{speaker:'KIARA',text:'sí. se puede caminar sin esquivar a todo el mundo.'}],
-    quietWalk2: [{speaker:'KIARA',text:'hay un banco más adelante.'},{speaker:'VALEN',text:'dale. vamos hasta ahí.'}],
-    fieldLetterGift: [{speaker:'KIARA',text:'hola otra vez'},{speaker:'KIARA',text:'te hice algo'}],
-    guestHalf: [{ speaker: 'INVITADO', text: 'creo que no conozco a la mitad de la gente' }],
-    guestCup: [{ speaker: 'INVITADO', text: '¿de quién era este vaso?' }],
-    guestFiveMinutes: [{ speaker: 'INVITADA', text: 'vine por cinco minutos.\nclaramente calculé mal.' }],
-    guestStanding: [{ speaker: 'INVITADO', text: 'llevo como veinte minutos parado acá' }],
-    patioNight: [{ kind: 'narrator', text: 'Está oscuro.\nConfirmado: sigue siendo de noche.' }],
     table: [
       { kind: 'narrator', text: 'Es una mesa.' },
       { kind: 'narrator', text: 'Sorprendentemente, no tiene relevancia para la trama.' }

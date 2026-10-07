@@ -48,7 +48,8 @@ valen-game/
 ├── index.html              Interfaz y carga de scripts
 ├── style.css               Pantalla, menús, diálogo y diseño responsive
 ├── js/
-│   ├── data.js             Personajes, capítulos y todos los diálogos
+│   ├── data.js             Personajes, capítulos y diálogos de la historia
+│   ├── memory-data.js      Textos y personajes de los recuerdos
 │   ├── maps.js             Dimensiones, objetos, NPCs y zonas de los mapas
 │   ├── input.js            Teclado y controles táctiles
 │   ├── player.js           Movimiento y colisiones
@@ -56,6 +57,8 @@ valen-game/
 │   ├── audio.js            Sonidos, ambiente y pistas opcionales
 │   ├── renderer.js         Cámara, dibujo pixel art y sprites
 │   ├── scenes.js           Progresión y eventos de los capítulos
+│   ├── memory-maps.js      Mapas de los recuerdos
+│   ├── memory-scenes.js    Eventos y progresión de los recuerdos
 │   └── game.js             Bucle principal, interfaz, transiciones y guardado
 ├── assets/
 │   ├── characters/
@@ -73,7 +76,7 @@ Los archivos comparten el espacio de nombres `window.VG`. El orden de las etique
 
 ## Dónde cambiar los diálogos
 
-En `js/data.js`, dentro de `VG.STORY`. Cada conversación tiene una clave y una lista de páginas. Por ejemplo:
+En `js/data.js`, dentro de `VG.STORY`, están los diálogos de la historia principal. Los diálogos de los recuerdos están en `js/memory-data.js` y se agregan al mismo `VG.STORY`. Cada conversación tiene una clave y una lista de páginas. Por ejemplo:
 
 ```js
 table: [

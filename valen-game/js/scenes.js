@@ -23,22 +23,36 @@
   function startKiss(g){
     g.flags.beforeKiss=true;g.checkpoint('before-kiss');g.objective('');
     const k=g.companion;
-    // Valen approaches; Kiara turns her face away and he stops. Hold the pose
-    // long enough to read the movement before either character says anything.
-    g.say('benchConfession',()=>{
-      g.animate('kiss',4.8,(t,c)=>{
-        const retreat=Math.max(0,Math.min((t-1.1)/.7,1));
-        g.player.x=506+8*Math.min(t/1.1,1);g.player.y=295;g.player.dir='right';
-        k.x=526+8*retreat;k.y=295-5*retreat;k.dir=t<1.1?'left':'up';
-        c.phase=t<1.1?'approach':'turned-away';
-      },()=>g.say('afterKiss',()=>g.say('benchComfort',()=>{
-        const a={x:g.player.x,y:g.player.y},b={x:k.x,y:k.y};
-        g.animate('bench',2.4,(t)=>{const f=Math.min(t/1.7,1);g.player.x=a.x+(500-a.x)*f;g.player.y=a.y+(273-a.y)*f;k.x=b.x+(512-b.x)*f;k.y=b.y+(273-b.y)*f;g.player.dir=k.dir='down';g.player.seated=k.seated=f===1;g.player.hugging=f===1;},()=>
-          g.say('secondKiss',()=>g.animate('bench',5,(t,c)=>{g.player.hugging=true;c.heart=t>1&&t<2.6;if(t>1&&!c.sounded){g.audio.play('kiss');c.sounded=true;}},()=>
-            g.intertitles(VG.STORY.fictionTransition.map(p=>p.text),()=>g.go('flowers'))
-          )));
-      })));
-    });
+    const finishMemoryTransition=()=>g.intertitles(VG.STORY.fictionTransition.map(p=>p.text),()=>g.go('flowers'));
+    const pauseAfterSecondKiss=()=>g.animate('quiet-bench',4.5,()=>{},finishMemoryTransition);
+    const secondKiss=()=>g.animate('second-kiss',1.6,(t,c)=>{
+      c.heart=t>.2&&t<1.25;
+      if(t>.2&&!c.secondKissSounded){g.audio.play('kiss');c.secondKissSounded=true;}
+    },pauseAfterSecondKiss);
+    const afterBenchAwkwardness=()=>g.say('secondKiss',()=>g.say('benchConsent',secondKiss));
+    const afterBenchThanks=()=>g.say('benchAwkward',afterBenchAwkwardness);
+    const afterCheckIn=()=>g.animate('bench-approach',.7, t=>{k.x=512-3*Math.min(t/.55,1);},()=>g.say('benchThanks',afterBenchThanks));
+    const afterSitting=()=>g.say('benchCheckIn',afterCheckIn);
+    const sitTogether=()=>{
+      const a={x:g.player.x,y:g.player.y},b={x:k.x,y:k.y};
+      g.animate('bench',2.4,t=>{
+        const f=Math.min(t/1.7,1);
+        g.player.x=a.x+(500-a.x)*f;g.player.y=a.y+(273-a.y)*f;
+        k.x=b.x+(512-b.x)*f;k.y=b.y+(273-b.y)*f;
+        g.player.dir=k.dir='down';g.player.seated=k.seated=f===1;g.player.hugging=f===1;
+      },afterSitting);
+    };
+    const afterFirstKiss=()=>g.say('afterKiss',()=>g.say('afterKissMore',()=>g.say('benchComfort',sitTogether)));
+    // Valen kisses Kiara briefly, then she turns away. Hold the pose long
+    // enough to read the movement before either character says anything.
+    g.say('benchConfession',()=>g.animate('kiss',4.8,(t,c)=>{
+      const retreat=Math.max(0,Math.min((t-1.1)/.7,1));
+      g.player.x=506+8*Math.min(t/1.1,1);g.player.y=295;g.player.dir='right';
+      k.x=526+8*retreat;k.y=295-5*retreat;k.dir=t<1.1?'left':'up';
+      c.heart=t>.7&&t<1.1;
+      if(t>.7&&!c.firstKissSounded){g.audio.play('kiss');c.firstKissSounded=true;}
+      c.phase=t<1.1?'approach':'turned-away';
+    },afterFirstKiss));
   }
   VG.SCENES={
     birthday:{
@@ -99,10 +113,17 @@
       update(g,dt){
         if(!g.flags.metKiara)return;
         if(g.player.walking)g.flags.walkDistance+=g.player.speed*dt;
+        if(g.flags.yogurt&&g.player.walking){
+          g.flags.walkAfterYogurtDistance=(g.flags.walkAfterYogurtDistance||0)+g.player.speed*dt;
+          if(!g.flags.walkAfterYogurt&&g.flags.walkAfterYogurtDistance>65){g.flags.walkAfterYogurt=true;g.say('afterYogurtWalk');return;}
+        }
         const distance=g.flags.walkDistance;
         if(!g.flags.walk1&&distance>95){g.flags.walk1=true;g.say('walk1',()=>g.checkpoint('walking'));}
         else if(!g.flags.walk2&&distance>235){g.flags.walk2=true;g.say('walk2',()=>g.checkpoint('walking'));}
-        else if(!g.flags.yogurtInvited&&distance>350){g.say('yogurtInvite',()=>{g.flags.yogurtInvited=true;plazaGoal(g);g.checkpoint('yogurt-invitation');});}
+        else if(!g.flags.walkMission&&distance>310){g.flags.walkMission=true;g.say('walkMission');}
+        else if(!g.flags.walkWeather&&distance>420){g.flags.walkWeather=true;g.say('walkWeather');}
+        else if(!g.flags.walkComfort&&distance>530){g.flags.walkComfort=true;g.say('walkComfort');}
+        else if(!g.flags.yogurtInvited&&distance>640){g.say('yogurtInvite',()=>{g.flags.yogurtInvited=true;plazaGoal(g);g.checkpoint('yogurt-invitation');});}
       },
       interact(g,t){
         if(t.id==='kiara'){
@@ -111,7 +132,7 @@
           g.say(VG.STORY.plazaHello.slice(0,2),()=>{
             const k=g.npc('kiara');const x=k.x,y=k.y;
             g.animate('handshake',1.8,(time)=>{g.player.x=x-17;g.player.y=y;g.player.dir='right';k.dir='left';},()=>
-              g.say(VG.STORY.plazaHello.slice(2),()=>{g.flags.metKiara=true;g.attachCompanion();plazaGoal(g);g.checkpoint('together');}));
+              g.say(VG.STORY.plazaHello.slice(2),()=>g.say('plazaHelloAfter',()=>{g.flags.metKiara=true;g.attachCompanion();plazaGoal(g);g.checkpoint('together');})));
           });return;
         }
         if(t.id==='yogurt-door'){
@@ -134,7 +155,7 @@
         if(t.id==='exit'){g.go('plaza',{position:{x:642,y:134}});return;}
         if(t.id==='counter'||t.character==='vendor'){
           if(g.flags.yogurt){g.say('shopAfter');return;}
-          g.say('yogurtOrder',(choices)=>{g.flags.yogurt=true;g.flags.yogurtChoices=choices;g.object('counter').marker=null;g.say('yogurtDone',()=>{g.objective('Vuelvan juntos a la plaza');g.checkpoint('yogurt-bought');});});return;
+          g.say('yogurtOrder',(choices)=>{g.flags.yogurt=true;g.flags.yogurtChoices=choices;g.object('counter').marker=null;g.say('yogurtReaction',()=>g.say('yogurtDone',()=>{g.objective('Vuelvan juntos a la plaza');g.checkpoint('yogurt-bought');}));});return;
         }
         g.say('table');
       }

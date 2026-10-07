@@ -9,6 +9,10 @@ const out=path.join(os.tmpdir(),'valen-game-qa');
  const b=await Browser.launch();
  try{
   await b.waitFor('!!window.VG?.game');await sleep(1600);
+  assert.deepEqual(await b.evaluate('VG.STORY.beneFirst[0].choices.map(c=>c.value)'),['stand','explore','food'],'existing Bene choices remain');
+  assert.deepEqual(await b.evaluate('VG.STORY.instagramInvite[1].choices.map(c=>c.value)'),['yes','sure'],'existing Instagram choices remain');
+  assert.equal(await b.evaluate('VG.STORY.beneFirst.some(p=>p.text==="excelente aporte a la conversación")'),true,'new birthday dialogue is added');
+  assert.equal(await b.evaluate('VG.STORY.afterKissMore.length'),13,'extended first-kiss dialogue is present');
   await b.screenshot(path.join(out,'01-title.png'));
   await b.evaluate(`window.QA={
    settle(){const g=VG.game;for(let i=0;i<1000;i++){if(g.transition){g.update(.05);continue;}if(g.cinematic){g.update(.05);continue;}break;}},
@@ -24,9 +28,13 @@ const out=path.join(os.tmpdir(),'valen-game-qa');
   await b.evaluate('QA.drain()');
   await b.screenshot(path.join(out,'02-friends-group.png'));
   const x=await b.evaluate('VG.game.player.x');await b.key('d',{duration:250});
+  await b.evaluate('if(VG.game.dialogue.active)QA.drain()');await b.key('d',{duration:250});
   assert((await b.evaluate('VG.game.player.x'))>x+5,'WASD moves player');
   assert.equal(await b.evaluate(`(()=>{const g=VG.game,p=new VG.Player(25,240);p.update(1,{x:-1,y:0},g.map,[]);return p.x>=21;})()`),true,'walls prevent crossing');
-  await b.evaluate(`QA.interact('bene');QA.drain(1);QA.interact('friend1');QA.drain();QA.interact('card-table');QA.drain()`);
+  await b.evaluate(`QA.interact('bene')`);
+  assert.equal(await b.evaluate('VG.game.dialogue.pages.some(p=>p.choices?.length===3)'),true,'Bene first conversation offers replies');
+  assert.equal(await b.evaluate('VG.game.dialogue.pages.some(p=>p.text==="¿vas a quedarte ahí parado?")'),true,'Bene first conversation retains its original prompt');
+  await b.evaluate(`QA.drain(1);QA.interact('friend1');QA.drain();QA.interact('card-table');QA.drain()`);
   assert.equal(await b.evaluate('VG.game.flags.birthdayStage'),'cards');
   await b.screenshot(path.join(out,'02-birthday.png'));
   await b.evaluate(`QA.interact('bene');QA.drain();QA.interact('friend1');QA.drain();QA.interact('friend2');QA.drain()`);
@@ -53,7 +61,7 @@ const out=path.join(os.tmpdir(),'valen-game-qa');
   await b.evaluate(`QA.interact('kiara');QA.drain();QA.settle();QA.drain()`);
   assert.equal(await b.evaluate('VG.game.flags.metKiara'),true);
   assert(await b.evaluate('!!VG.game.companion'));
-  // Enough genuine player movement to trigger all three walk conversations.
+  // Enough genuine player movement to trigger both walk conversations.
   await b.evaluate(`const g=VG.game;g.player.x=310;g.player.y=295;g.input.held.add('KeyD');for(let i=0;i<170;i++){g.update(.05);if(g.dialogue.active){QA.drain(2);g.input.held.add('KeyD');}}g.input.clear();`);
   // If a bench stops the walk, take a second open strip.
   await b.evaluate(`if(!VG.game.flags.yogurtInvited){const g=VG.game;g.player.x=350;g.player.y=350;g.input.held.add('KeyA');for(let i=0;i<180;i++){g.update(.05);if(g.dialogue.active){QA.drain();g.input.held.add('KeyA');}}g.input.clear();}`);
@@ -64,19 +72,16 @@ const out=path.join(os.tmpdir(),'valen-game-qa');
   await b.evaluate(`QA.drain(2)`);
   assert.equal(await b.evaluate('VG.game.flags.yogurt'),true);
   assert.equal((await b.evaluate('VG.game.flags.yogurtChoices')).length,2);
-  await b.evaluate(`QA.interact('exit');QA.settle();QA.interact('bench');QA.drain();VG.game.cinematic.time=2;VG.game.update(.016)`);
+  await b.evaluate(`QA.interact('exit');QA.settle();QA.interact('bench');QA.drain();VG.game.cinematic.time=.8;VG.game.update(.016)`);
+  await b.evaluate('VG.game.cinematic.time=2;VG.game.update(.016)');
   assert.equal(await b.evaluate('VG.game.companion.dir'),'up');
-  assert.equal(await b.evaluate('VG.game.cinematic.phase'),'turned-away');
-  assert.equal(await b.evaluate('VG.game.cinematic.heart'),false);
   await b.screenshot(path.join(out,'06-face-turned.png'));
   await b.evaluate('QA.settle()');
-  assert.equal(await b.evaluate('VG.game.dialogue.page.speaker'),'KIARA');
-  assert.match(await b.evaluate('VG.game.dialogue.page.text'),/perdón que te corrí la cara/);
-  assert.deepEqual(await b.evaluate('VG.STORY.afterKiss.map(p=>[p.speaker,p.text])'),[
-    ['KIARA','perdón que te corrí la cara'],['KIARA','me puse nerviosa'],['VALEN','pensé que no querías'],['KIARA','noo'],['KIARA','sí quería']
-  ]);
+  assert.equal(await b.evaluate('VG.game.dialogue.page.speaker'),'VALEN');
+  assert.deepEqual(await b.evaluate("VG.STORY.afterKiss.map(p=>p.text.replace(/\\n/g,'|'))"),['perdón|pensé que querías','sí quería 😭|solo me puse nerviosa','ah, está bien. tranqui.']);
+  assert.deepEqual(await b.evaluate('VG.STORY.secondKiss.map(p=>p.text)'),['¿así estás bien?','sí. así sí.']);
   await b.evaluate('VG.game.dialogue.reveal()');await b.screenshot(path.join(out,'06-after-kiss.png'));
-  await b.evaluate('QA.drain();QA.settle();QA.drain();QA.settle();QA.intertitles();QA.settle()');
+  await b.evaluate(`for(let i=0;i<10;i++){QA.drain();QA.settle();if(!VG.game.dialogue.active&&!VG.game.cinematic&&!VG.game.intertitle)break;}QA.intertitles();QA.settle()`);
   assert.equal(await b.evaluate('VG.game.sceneId'),'flowers');
   assert.equal(await b.evaluate('!!VG.game.companion'),false);
   assert.equal(await b.evaluate('document.querySelector("#objective").classList.contains("hidden")'),true);
