@@ -96,8 +96,7 @@
       { speaker: 'VALEN', text: 'hola.' }
     ],
     kiaraThought: [
-      { speaker: 'KIARA', kind: 'thought', text: 'Qué ganas de hablarle...\npero no me animo.' },
-      { speaker: 'KIARA', kind: 'thought', text: 'quiero hablarle...' },
+      { speaker: 'KIARA', kind: 'thought', text: 'Qué ganas de hablarle...' },
       { kind: 'narrator', text: '...' },
       { speaker: 'KIARA', kind: 'thought', text: 'pero me da vergüenza' }
     ],

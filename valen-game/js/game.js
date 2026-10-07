@@ -63,18 +63,17 @@
       $('mute-button').textContent=a.muted?'♫̸':'♪';$('mute-button').setAttribute('aria-label',a.muted?'Activar audio':'Silenciar audio');$('mute-button').setAttribute('aria-pressed',String(a.muted));$('pause-mute').textContent=a.muted?'Activar audio':'Silenciar';
     }
     setOverlay(value){document.body.classList.toggle('overlay-active',value);}
-    refreshMenu(){this.save=this.validSave(read(SAVE_KEY));$('continue-button').classList.toggle('hidden',!this.save);$('play-button').textContent=this.save?'Nueva partida':'Jugar';$('memories-button').classList.toggle('hidden',!this.unlocks.storyCompleted);}
+    refreshMenu(){this.save=this.validSave(read(SAVE_KEY));$('continue-button').classList.toggle('hidden',!this.save);$('play-button').textContent=this.save?'Nueva partida':'Jugar';$('memories-button').classList.remove('hidden');}
     unlockStory(){this.unlocks={storyCompleted:true,memoriesUnlocked:true};write(UNLOCK_KEY,this.unlocks);}
     leaveMemory(){if(this.mainState){this.flags=this.mainState.flags;this.save=this.mainState.save;}this.mainState=null;this.memoryMode=null;}
     selectMemory(index){const buttons=Array.from($('memory-list').children);if(!buttons.length)return;this.memorySelection=(index+buttons.length)%buttons.length;buttons[this.memorySelection].focus({preventScroll:true});buttons[this.memorySelection].scrollIntoView({block:'nearest'});}
     showMemories(){
-      if(!this.unlocks.storyCompleted)return false;
       const transition=this.transition;this.showMenu();this.transition=transition;this.memoriesOpen=true;
       $('title-screen').classList.add('hidden');$('memories-screen').classList.remove('hidden');document.body.classList.add('memories-open');
       $('chapter-label').textContent='algunos momentos más';this.audio.scene('flowers');this.selectMemory(this.memorySelection);return true;
     }
     startMemory(id){
-      const memory=VG.MEMORIES[id];if(!this.unlocks.storyCompleted||!memory)return false;
+      const memory=VG.MEMORIES[id];if(!memory)return false;
       this.audio.unlock();this.leaveMemory();this.mainState={flags:this.flags,save:this.save};this.flags={};this.memoryMode=id;this.memoriesOpen=false;
       $('memories-screen').classList.add('hidden');document.body.classList.remove('memories-open');this.paused=false;this.completedView=false;this.audio.pause(false);this.focus();
       this.go(memory.startScene);return true;
