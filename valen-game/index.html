@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#172724">
+  <meta name="description" content="Valen ♡ — una pequeña aventura, hecha por Kiara.">
+  <title>Valen ♡</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%23e6a293' d='M2 3h4v2h4V3h4v6h-2v2h-2v2H6v-2H4V9H2z'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="game-shell" aria-label="Valen, aventura narrativa">
+    <header class="topbar">
+      <span class="brand">valen <span>♡</span></span>
+      <span id="chapter-label" class="chapter-label">una pequeña aventura</span>
+      <div class="toolbar">
+        <button id="mute-button" class="icon-button" title="Silenciar" aria-label="Silenciar audio">♪</button>
+        <button id="settings-button" class="icon-button" title="Pausa y ajustes" aria-label="Pausa y ajustes">Ⅱ</button>
+      </div>
+    </header>
+    <section class="game-frame" id="game-frame" aria-label="Área del juego">
+      <canvas id="game" width="384" height="216" tabindex="-1" aria-label="Mapa del juego. Movete con flechas o WASD e interactuá con E, Enter o Espacio."></canvas>
+      <div id="objective" class="objective hidden"><span class="objective-mark">◇</span><span id="objective-text"></span></div>
+      <div id="scene-banner" class="scene-banner hidden"></div>
+      <div id="interact-hint" class="interact-hint hidden"><kbd>E</kbd><span id="interact-label">Hablar</span></div>
+      <div id="toast" class="toast hidden" role="status"></div>
+      <div id="title-screen" class="screen title-screen">
+        <div class="title-content">
+          <span class="tiny-flower" aria-hidden="true">✦</span>
+          <h1>Valen <span>♡</span></h1>
+          <div class="title-divider" aria-hidden="true"><i></i>✧<i></i></div>
+          <button id="continue-button" class="pixel-button hidden">Continuar</button>
+          <button id="play-button" class="pixel-button primary">Jugar</button>
+          <p class="title-hint">un ratito, cuatro lugares.</p>
+        </div>
+        <span class="title-bottom">HECHO POR KIARA</span>
+      </div>
+      <section id="phone-screen" class="phone-screen hidden" aria-label="Mensajes de Social">
+        <div class="phone">
+          <div class="phone-status"><span>16:24</span><span>··· ▰</span></div>
+          <div class="phone-heading"><span id="phone-avatar">k</span><div><strong id="phone-name">Social</strong><small id="phone-subtitle">gente que quizás conocés</small></div><span>···</span></div>
+          <div id="phone-feed" class="phone-feed" aria-live="polite"></div>
+          <button id="phone-next" class="phone-next">Seguir a Kiara <span>＋</span></button>
+          <div class="phone-home"></div>
+        </div>
+        <span id="phone-caption" class="phone-caption">02 / DESPUÉS DEL CUMPLE</span>
+      </section>
+      <section id="dialogue" class="dialogue hidden" aria-label="Diálogo">
+        <div class="dialogue-header"><span id="speaker"></span><span id="thought-tag"></span><span id="page-number"></span></div>
+        <p id="dialogue-text" aria-live="polite"></p>
+        <div id="choices" class="choices"></div>
+        <button id="dialogue-next" class="dialogue-next" aria-label="Continuar diálogo">seguir <span>↵</span></button>
+      </section>
+      <div id="intertitle" class="intertitle hidden"><p id="intertitle-text"></p><button id="intertitle-next" class="text-button">continuar ↵</button></div>
+      <section id="credits" class="screen credits hidden">
+        <span class="credits-flower">✧</span><h2>VALEN ♡</h2><p>hecho por Kiara</p>
+        <p>con una cantidad<br>completamente razonable<br>de tiempo y cariño</p>
+        <strong>Fin... por ahora.</strong>
+        <div class="credits-actions"><button id="return-field" class="pixel-button">Volver al campo</button><button id="replay" class="text-button">Rejugar</button></div>
+      </section>
+      <div id="fade" class="fade"></div>
+      <section id="pause-screen" class="screen pause-screen hidden" role="dialog" aria-modal="true" aria-labelledby="pause-title">
+        <div class="pause-panel"><h2 id="pause-title">un segundo.</h2><p>La historia te espera.</p>
+          <label class="volume-label" for="volume">Volumen <span id="volume-value">35%</span></label>
+          <input id="volume" type="range" min="0" max="100" value="35">
+          <button id="pause-mute" class="text-button">Silenciar</button>
+          <button id="resume-button" class="pixel-button primary">Seguir jugando</button>
+          <button id="menu-button" class="text-button">Volver al inicio</button>
+          <p class="save-note">El progreso se guarda en los momentos importantes.</p>
+        </div>
+      </section>
+      <pre id="debug" class="debug hidden"></pre>
+    </section>
+    <div class="touch-controls" aria-label="Controles táctiles">
+      <div class="dpad"><button data-direction="up" aria-label="Caminar arriba">▲</button><button data-direction="left" aria-label="Caminar a la izquierda">◀</button><span></span><button data-direction="right" aria-label="Caminar a la derecha">▶</button><button data-direction="down" aria-label="Caminar abajo">▼</button></div>
+      <span class="touch-caption">sin apuro.</span><button id="action-button" data-action="interact" class="action-button" aria-label="Interactuar o continuar">A</button>
+    </div>
+    <footer class="bottom-bar"><span class="desktop-help"><kbd>W A S D</kbd> / <kbd>↑ ← ↓ →</kbd> caminar <i>·</i> <kbd>E</kbd> interactuar</span><span class="mobile-help">Para jugar más cómodo, giralo ↻</span><span class="bottom-right">sin apuro <span>✦</span></span></footer>
+  </main>
+  <script src="js/data.js"></script><script src="js/maps.js"></script><script src="js/input.js"></script><script src="js/audio.js"></script><script src="js/player.js"></script><script src="js/dialogue.js"></script><script src="js/renderer.js"></script><script src="js/scenes.js"></script><script src="js/game.js"></script>
+</body>
+</html>
