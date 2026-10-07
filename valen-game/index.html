@@ -8,6 +8,7 @@
   <title>Valen ♡</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%23e6a293' d='M2 3h4v2h4V3h4v6h-2v2h-2v2H6v-2H4V9H2z'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="memory-ui.css">
 </head>
 <body>
   <main class="game-shell" aria-label="Valen, aventura narrativa">
@@ -32,10 +33,19 @@
           <div class="title-divider" aria-hidden="true"><i></i>✧<i></i></div>
           <button id="continue-button" class="pixel-button hidden">Continuar</button>
           <button id="play-button" class="pixel-button primary">Jugar</button>
+          <button id="memories-button" class="pixel-button hidden">Recuerdos ♡</button>
           <p class="title-hint">un ratito, cuatro lugares.</p>
         </div>
         <span class="title-bottom">HECHO POR KIARA</span>
       </div>
+      <section id="memories-screen" class="screen memories-screen hidden" aria-label="Recuerdos">
+        <div class="memories-panel">
+          <div class="memories-heading"><h2>Recuerdos ♡</h2><p>Algunos momentos más.</p></div>
+          <div id="memory-list" class="memory-list"></div>
+          <p class="memories-note">Diálogos aproximados, lugares simplificados.</p>
+          <button id="memories-back" class="text-button">Volver al inicio</button>
+        </div>
+      </section>
       <section id="phone-screen" class="phone-screen hidden" aria-label="Mensajes de Social">
         <div class="phone">
           <div class="phone-status"><span>16:24</span><span>··· ▰</span></div>
@@ -52,10 +62,17 @@
         <div id="choices" class="choices"></div>
         <button id="dialogue-next" class="dialogue-next" aria-label="Continuar diálogo">seguir <span>↵</span></button>
       </section>
-      <section id="declaration" class="declaration hidden" aria-label="Mensaje para Valen">
+      <section id="declaration" class="declaration hidden" role="dialog" aria-modal="true" aria-label="Carta para Valen">
+        <div class="letter-envelope" aria-hidden="true"><span class="envelope-note"></span><span class="envelope-flap"></span><span class="envelope-seal">♡</span></div>
         <div class="declaration-content">
-          <p id="declaration-text" aria-live="polite"></p>
-          <button id="declaration-next" class="declaration-next" aria-label="Continuar mensaje">continuar <span aria-hidden="true">↵</span></button>
+          <span class="letter-corner letter-corner-top" aria-hidden="true">✿</span>
+          <span class="letter-corner letter-corner-bottom" aria-hidden="true">♡</span>
+          <h2 class="letter-heading">para Valen <span aria-hidden="true">♡</span></h2>
+          <p id="declaration-text" aria-live="polite" aria-atomic="true"></p>
+          <div class="declaration-footer">
+            <span id="declaration-counter" class="declaration-counter"></span>
+            <button id="declaration-next" class="declaration-next" aria-label="Continuar mensaje"><span id="declaration-next-label">continuar</span> <span aria-hidden="true">↵</span></button>
+          </div>
         </div>
       </section>
       <div id="intertitle" class="intertitle hidden"><p id="intertitle-text"></p><button id="intertitle-next" class="text-button">continuar ↵</button></div>
@@ -63,7 +80,7 @@
         <span class="credits-flower">✧</span><h2>VALEN ♡</h2><p>hecho por Kiara</p>
         <p>con una cantidad<br>completamente razonable<br>de tiempo y cariño</p>
         <strong>Fin... por ahora.</strong>
-        <div class="credits-actions"><button id="return-field" class="pixel-button">Volver al campo</button><button id="replay" class="text-button">Rejugar</button></div>
+        <div class="credits-actions"><button id="return-field" class="pixel-button">Volver al campo</button><button id="credits-memories" class="pixel-button">Recuerdos ♡</button><button id="credits-menu" class="text-button">Volver al inicio</button><button id="replay" class="text-button">Rejugar</button></div>
       </section>
       <div id="fade" class="fade"></div>
       <section id="pause-screen" class="screen pause-screen hidden" role="dialog" aria-modal="true" aria-labelledby="pause-title">
@@ -84,6 +101,6 @@
     </div>
     <footer class="bottom-bar"><span class="desktop-help"><kbd>W A S D</kbd> / <kbd>↑ ← ↓ →</kbd> caminar <i>·</i> <kbd>E</kbd> interactuar</span><span class="mobile-help">Para jugar más cómodo, giralo ↻</span><span class="bottom-right">sin apuro <span>✦</span></span></footer>
   </main>
-  <script src="js/data.js"></script><script src="js/maps.js"></script><script src="js/input.js"></script><script src="js/audio.js"></script><script src="js/player.js"></script><script src="js/dialogue.js"></script><script src="js/renderer.js"></script><script src="js/scenes.js"></script><script src="js/game.js"></script>
+  <script src="js/data.js"></script><script src="js/memory-data.js"></script><script src="js/maps.js"></script><script src="js/memory-maps.js"></script><script src="js/input.js"></script><script src="js/audio.js"></script><script src="js/player.js"></script><script src="js/dialogue.js"></script><script src="js/renderer.js"></script><script src="js/scenes.js"></script><script src="js/memory-scenes.js"></script><script src="js/game.js"></script>
 </body>
 </html>

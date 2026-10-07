@@ -317,6 +317,14 @@
       { speaker: 'VALEN', text: 'dato importante.' }
     ],
 
+    plazaLongStart: [{speaker:'KIARA',text:'podemos dar la vuelta por ese sendero.'},{speaker:'VALEN',text:'dale, vamos.'}],
+    walkBeforeShop: [{speaker:'KIARA',text:'demos una vuelta primero.\nel local no se va a ir.'}],
+    walkNotTogether: [{kind:'narrator',text:'Primero encontrá a Kiara.\nYa está esperando en la plaza.'}],
+    quietBeforeYogurt: [{speaker:'KIARA',text:'podemos ir para allá después.\n¿primero el yogurt?'}],
+    quietStart: [{speaker:'KIARA',text:'por acá hay menos gente.'},{speaker:'VALEN',text:'vamos por acá entonces.'}],
+    quietWalk1: [{speaker:'VALEN',text:'está más tranquilo este lado.'},{speaker:'KIARA',text:'sí. se puede caminar sin esquivar a todo el mundo.'}],
+    quietWalk2: [{speaker:'KIARA',text:'hay un banco más adelante.'},{speaker:'VALEN',text:'dale. vamos hasta ahí.'}],
+    fieldLetterGift: [{speaker:'KIARA',text:'hola otra vez'},{speaker:'KIARA',text:'te hice algo'}],
     guestHalf: [{ speaker: 'INVITADO', text: 'creo que no conozco a la mitad de la gente' }],
     guestCup: [{ speaker: 'INVITADO', text: '¿de quién era este vaso?' }],
     guestFiveMinutes: [{ speaker: 'INVITADA', text: 'vine por cinco minutos.\nclaramente calculé mal.' }],

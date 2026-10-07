@@ -35,32 +35,90 @@
     close(silent=false){const callback=this.onEnd,result=this.results;this.active=false;this.onEnd=null;this.el.classList.add('hidden');document.body.classList.remove('dialogue-active');if(!silent&&callback)callback(result);}
   }
   VG.Dialogue=Dialogue;
-  // This presentation belongs only to the final message. It deliberately has
-  // no speaker label, border, choices or automatic advancement.
+  // The same manual-page presenter supports the final letter and private
+  // thoughts. Story text stays in data.js; neither mode changes its source array.
   class Declaration {
     constructor(game){
-      this.game=game;this.active=false;this.el=document.getElementById('declaration');
+      this.game=game;this.active=false;this.mode=null;this.age=0;this.openTime=0;
+      this.el=document.getElementById('declaration');
       this.textEl=document.getElementById('declaration-text');
-      this.el.addEventListener('click',()=>{this.game.focus();this.advance();});
+      this.contentEl=this.el.querySelector('.declaration-content');
+      this.next=document.getElementById('declaration-next');
+      this.nextLabel=document.getElementById('declaration-next-label');
+      this.counter=document.getElementById('declaration-counter');
+      this.el.addEventListener('click',()=>{
+        if(!this.active||this.opening||this.game.paused||this.game.transition)return;
+        this.game.focus();this.advance();
+      });
+      // A keyboard user can also press E while the native next button has focus.
+      this.el.addEventListener('keydown',event=>{
+        if(event.code!=='KeyE'||event.repeat)return;
+        event.preventDefault();event.stopPropagation();this.advance();
+      });
     }
-    open(pages,onEnd){
-      this.pages=pages;this.index=0;this.onEnd=onEnd;this.active=true;
-      this.el.classList.remove('hidden');document.body.classList.add('declaration-active');this.show();
+    open(pages,onEnd,options={}){
+      this.close(true);
+      this.mode=options.mode==='thoughts'?'thoughts':'letter';
+      this.pages=(Array.isArray(pages)?pages:[pages]).map(page=>typeof page==='string'?{text:page}:page);
+      if(this.mode==='letter'&&this.pages[this.pages.length-1]?.text!=='— Kiara ♡'){
+        this.pages.push({text:'— Kiara ♡',kind:'signature'});
+      }
+      this.index=0;this.onEnd=onEnd;this.active=true;this.openTime=0;
+      this.opening=this.mode==='letter';
+      this.openingDuration=window.matchMedia('(prefers-reduced-motion: reduce)').matches ? .05 : .65;
+      this.el.dataset.mode=this.mode;
+      this.el.setAttribute('aria-label',this.mode==='letter'?'Carta para Valen':'Pensamientos privados');
+      this.el.classList.toggle('letter-opening',this.opening);
+      this.el.setAttribute('aria-busy',String(this.opening));
+      this.contentEl.setAttribute('aria-hidden',String(this.opening));
+      this.next.disabled=this.opening;
+      this.el.classList.remove('hidden');document.body.classList.add('declaration-active');
+      this.game.input.clear();this.show();
     }
     show(){
+      if(!this.active)return;
       const page=this.pages[this.index];if(!page){this.close();return;}
-      this.age=0;this.textEl.textContent=page.text;
+      this.age=0;this.textEl.textContent=page.text||'';
+      this.el.classList.toggle('signature-page',page.kind==='signature');
+      this.counter.textContent=(this.index+1)+' / '+this.pages.length;
+      this.counter.setAttribute('aria-label','Fragmento '+(this.index+1)+' de '+this.pages.length);
+      const last=this.index===this.pages.length-1;
+      this.nextLabel.textContent=last?'terminar':'continuar';
+      this.next.setAttribute('aria-label',last?(this.mode==='letter'?'Cerrar carta':'Terminar pensamientos'):'Continuar al siguiente fragmento');
+      this.textEl.scrollTop=0;
       this.textEl.classList.remove('fragment-in');void this.textEl.offsetWidth;
-      this.textEl.classList.add('fragment-in');
+      if(!this.opening)this.textEl.classList.add('fragment-in');
+    }
+    finishOpening(){
+      if(!this.active||!this.opening)return;
+      this.opening=false;this.el.classList.remove('letter-opening');
+      this.el.setAttribute('aria-busy','false');this.contentEl.setAttribute('aria-hidden','false');
+      this.next.disabled=false;this.textEl.classList.add('fragment-in');
+      this.game.input.clear();
     }
     advance(){
-      if(!this.active||this.game.paused||this.game.transition||this.age<.28)return;
+      if(!this.active||this.opening||this.game.paused||this.game.transition||this.age<.28)return;
       this.game.input.clear();this.index++;this.show();
     }
-    update(dt,input){this.age+=dt;if(input.consume('interact'))this.advance();}
+    update(dt,input){
+      if(!this.active||this.game.paused||this.game.transition)return;
+      this.age+=dt;this.openTime+=dt;
+      if(this.opening){
+        // Consume input during the envelope so the opening gesture cannot skip
+        // the first fragment. No timers or delayed callbacks survive close().
+        input.consume('interact');
+        if(this.openTime>=this.openingDuration)this.finishOpening();
+        return;
+      }
+      if(input.consume('interact'))this.advance();
+    }
     close(silent=false){
       const callback=this.onEnd;this.onEnd=null;this.active=false;
-      this.el.classList.add('hidden');document.body.classList.remove('declaration-active');
+      this.opening=false;this.mode=null;this.openTime=0;this.age=0;
+      this.el.classList.add('hidden');this.el.classList.remove('letter-opening','signature-page');
+      delete this.el.dataset.mode;this.el.setAttribute('aria-busy','false');
+      this.contentEl.setAttribute('aria-hidden','false');this.next.disabled=false;
+      document.body.classList.remove('declaration-active');
       if(!silent&&callback)callback();
     }
   }

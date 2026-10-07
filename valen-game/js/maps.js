@@ -8,7 +8,7 @@
   const wall = (id, x, y, w, h) => ({ id, type: 'wall', x, y, w, h, solid: true });
   V.MAPS = {
     birthday: {
-      title: 'El cumpleaños', width: 576, height: 352, spawn: { x: 194, y: 274 },
+      title: 'El cumpleaños', width: 576, height: 352, spawn: { x: 220, y: 284, dir: 'up' },
       objects: [
         wall('wall-top', 0, 0, 576, 54), wall('wall-left', 0, 0, 16, 352), wall('wall-right', 560, 0, 16, 352),
         wall('wall-bottom-left', 0, 338, 266, 14), wall('wall-bottom-right', 310, 338, 266, 14),
@@ -28,13 +28,14 @@
       ],
       npcs: [
         // The close friends face an open, irregular semicircle. Valen starts at its edge.
-        { id: 'bene', character: 'bene', name: 'Bene', x: 246, y: 218, dir: 'left', group: true },
+        { id: 'bene', character: 'bene', name: 'Bene', x: 240, y: 207, dir: 'left', group: true },
         { id: 'chupe', character: 'chupe', name: 'Chupe', x: 315, y: 116 },
-        { id: 'friend1', character: 'friend1', name: 'Un amigo', x: 185, y: 194, dir: 'down', group: true },
-        { id: 'friend2', character: 'friend2', name: 'Una amiga', x: 121, y: 246, dir: 'right', group: true },
-        { id: 'close-friend3', character: 'friend3', name: 'Un amigo', x: 132, y: 207, dir: 'right', group: true },
-        { id: 'close-friend4', character: 'friend4', name: 'Una amiga', x: 262, y: 264, dir: 'left', group: true },
-        { id: 'kiara', character: 'kiara', name: 'Kiara', x: 460, y: 104 },
+        { id: 'friend1', character: 'friend1', name: 'Un amigo', x: 190, y: 188, dir: 'down', group: true },
+        { id: 'friend2', character: 'friend2', name: 'Una amiga', x: 118, y: 247, dir: 'right', group: true },
+        { id: 'close-friend3', character: 'friend3', name: 'Un amigo', x: 140, y: 209, dir: 'right', group: true },
+        { id: 'close-friend4', character: 'friend4', name: 'Una amiga', x: 267, y: 247, dir: 'left', group: true },
+        { id: 'kiara', character: 'kiara', name: 'Kiara', x: 157, y: 286, dir: 'right', group: true },
+        { id: 'close-friend5', character: 'friend1', name: 'Un amigo', x: 206, y: 317, dir: 'up', group: true },
         // Most guests are scenery with collision, rather than extra conversations.
         { id: 'guest1', character: 'friend4', name: 'Una invitada', x: 171, y: 119, dir: 'left', ambient: true, interact: false },
         { id: 'guest2', character: 'friend3', name: 'Un invitado', x: 368, y: 213, dir: 'left', ambient: true, dialogue: 'guestCup' },
@@ -49,9 +50,12 @@
         { id: 'guest11', character: 'friend3', name: 'Un invitado', x: 322, y: 301, dir: 'right', ambient: true, interact: false },
         { id: 'guest12', character: 'friend2', name: 'Una invitada', x: 98, y: 313, dir: 'left', ambient: true, interact: false },
         { id: 'guest13', character: 'friend4', name: 'Una invitada', x: 508, y: 135, dir: 'right', ambient: true, interact: false },
-        { id: 'guest14', character: 'friend1', name: 'Un invitado', x: 543, y: 123, dir: 'left', ambient: true, interact: false }
+        { id: 'guest14', character: 'friend1', name: 'Un invitado', x: 543, y: 123, dir: 'left', ambient: true, interact: false },
+        { id: 'guest15', character: 'friend2', name: 'Una invitada', x: 430, y: 233, dir: 'right', ambient: true, interact: false },
+        { id: 'guest16', character: 'friend3', name: 'Un invitado', x: 462, y: 235, dir: 'left', ambient: true, interact: false },
+        { id: 'guest17', character: 'friend4', name: 'Una invitada', x: 385, y: 321, dir: 'left', ambient: true, interact: false }
       ],
-      triggers: [{ id: 'kiara-thought', x: 392, y: 72, w: 110, h: 91 }]
+      triggers: [{ id: 'kiara-thought', x: 125, y: 249, w: 65, h: 62 }]
     },
     birthdayPatio: {
       title: 'El patio', width: 384, height: 288, spawn: { x: 192, y: 115 },
@@ -99,7 +103,9 @@
         tree('tree1', 45, 115), tree('tree2', 245, 110, 1), tree('tree3', 475, 114),
         tree('tree4', 704, 201, 1), tree('tree5', 685, 372), tree('tree6', 99, 451, 1),
         tree('tree7', 325, 426), tree('tree8', 52, 216), tree('tree9', 650, 472),
-        { id: 'bin', type: 'bin', x: 566, y: 315, w: 16, h: 20, solid: true, interact: true }
+        { id: 'bin', type: 'bin', x: 566, y: 315, w: 16, h: 20, solid: true, interact: true },
+        { id: 'walk-exit', type: 'plaza-sign', label: 'PASEO', actionLabel: 'Seguir el sendero', x: 504, y: 431, w: 32, h: 22, solid: true, interact: true },
+        { id: 'quiet-exit', type: 'plaza-sign', label: 'SENDERO', actionLabel: 'Ir a la zona tranquila', x: 714, y: 306, w: 40, h: 22, solid: true, interact: true }
       ],
       npcs: [
         { id: 'kiara', character: 'kiara', name: 'Kiara', x: 264, y: 286 },
@@ -107,6 +113,39 @@
         { id: 'reader', character: 'friend2', name: 'Una persona', x: 115, y: 272 }
       ],
       triggers: [{ id: 'walk-west', x: 165, y: 269, w: 67, h: 65 }, { id: 'walk-east', x: 389, y: 260, w: 75, h: 84 }]
+    },
+    plazaWalk: {
+      title: 'El paseo', theme: 'plaza', width: 704, height: 432, spawn: { x: 48, y: 328 },
+      paths: [
+        {x:0,y:302,w:205,h:44},{x:168,y:165,w:44,h:176},{x:183,y:164,w:310,h:43},
+        {x:450,y:171,w:46,h:130},{x:466,y:258,w:169,h:44},{x:596,y:84,w:46,h:201},{x:621,y:76,w:83,h:40}
+      ],
+      objects: [
+        {id:'back',type:'plaza-sign',label:'PLAZA',actionLabel:'Volver a la plaza',x:26,y:362,w:34,h:22,solid:true,interact:true},
+        {id:'walk-end',type:'plaza-sign',label:'PLAZA',actionLabel:'Seguir hasta el local',x:659,y:67,w:34,h:22,solid:true,interact:true},
+        {id:'walk-bench',type:'bench',x:245,y:208,w:64,h:24,solid:true,interact:true},
+        {id:'walk-fountain',type:'fountain',x:309,y:65,w:72,h:64,solid:true,interact:true},
+        {id:'walk-lamp',type:'lamp',x:570,y:264,w:9,h:10,solid:true,interact:true},
+        tree('w-tree1',65,177),tree('w-tree2',126,93),tree('w-tree3',289,360),tree('w-tree4',393,272),
+        tree('w-tree5',514,90),tree('w-tree6',651,355),tree('w-tree7',55,418),tree('w-tree8',691,188),
+        {id:'walk-flowers',type:'flower-bed',x:208,y:128,w:45,h:24,interact:true}
+      ],
+      npcs:[{id:'walker',character:'passerby',name:'Un vecino',x:133,y:311},{id:'reader',character:'friend4',name:'Alguien descansando',x:306,y:252,interact:false}],
+      triggers:[{id:'walk-chat1',x:149,y:169,w:68,h:148},{id:'walk-chat2',x:441,y:234,w:182,h:87}]
+    },
+    plazaQuiet: {
+      title: 'Un poco más allá', theme:'plaza',width:640,height:400,spawn:{x:43,y:310},
+      paths:[{x:0,y:284,w:242,h:42},{x:212,y:172,w:46,h:151},{x:222,y:162,w:222,h:44},{x:411,y:127,w:47,h:72},{x:433,y:118,w:178,h:44}],
+      objects:[
+        {id:'back',type:'plaza-sign',label:'PLAZA',actionLabel:'Volver a la plaza',x:39,y:346,w:34,h:22,solid:true,interact:true},
+        {id:'bench',type:'bench',x:502,y:119,w:64,h:24,solid:true,interact:true},
+        {id:'quiet-lamp',type:'lamp',x:472,y:168,w:9,h:10,solid:true},
+        {id:'quiet-flowers',type:'flower-bed',x:302,y:132,w:48,h:24,interact:true},
+        tree('q-tree1',73,175),tree('q-tree2',162,92),tree('q-tree3',319,294),tree('q-tree4',385,86),
+        tree('q-tree5',603,211),tree('q-tree6',493,360),tree('q-tree7',138,392),tree('q-tree8',22,258),
+        {id:'quiet-rock',type:'rock',x:439,y:301,w:24,h:14,solid:true}
+      ],npcs:[{id:'quiet-reader',character:'passerby',name:'Una persona',x:125,y:192,interact:false}],
+      triggers:[{id:'quiet-chat1',x:190,y:172,w:90,h:144},{id:'quiet-chat2',x:400,y:119,w:90,h:94}]
     },
     yogurt: {
       title: 'Algo de yogurt', width: 384, height: 288, spawn: { x: 194, y: 243 },

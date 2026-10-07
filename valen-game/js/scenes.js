@@ -160,14 +160,38 @@
   class Phone {
     constructor(g){this.g=g;this.el=document.getElementById('phone-screen');this.feed=document.getElementById('phone-feed');this.button=document.getElementById('phone-next');this.button.addEventListener('click',()=>{this.g.focus();this.next();});}
     start(){
+      this.mode='instagram';this.onDone=null;
       this.el.classList.remove('hidden');this.feed.replaceChildren();this.step=0;this.queue=[];this.wait=0;this.finished=false;
       document.getElementById('phone-name').textContent='Social';document.getElementById('phone-subtitle').textContent='gente que quizás conocés';
       const profile=document.createElement('div');profile.className='profile';profile.innerHTML='<span class="profile-face">k</span><strong>kiara</strong><small>Del cumple de Chupe.</small>';
       this.feed.appendChild(profile);this.button.textContent='Seguir a Kiara ＋';
     }
+    startConversation(messages,onDone,contact){
+      this.mode='conversation';this.onDone=onDone;this.queue=messages.slice();this.wait=0;this.finished=false;
+      this.el.classList.remove('hidden');this.feed.replaceChildren();
+      document.getElementById('phone-name').textContent=contact.name;
+      document.getElementById('phone-subtitle').textContent=contact.subtitle;
+      this.button.disabled=false;
+      this.showConversationMessage();
+    }
     append(p){const e=document.createElement('div');e.className=p.kind==='narrator'?'message-note':'bubble'+(p.speaker==='VALEN'?' valen':'');e.textContent=p.text;this.feed.appendChild(e);this.feed.scrollTop=this.feed.scrollHeight;this.g.audio.play(p.kind==='narrator'?'select':'interact');}
+    showConversationMessage(){
+      const message=this.queue.shift();
+      if(message){
+        this.append(message);
+        this.finished=this.queue.length===0;
+        this.button.textContent=this.finished?'Continuar ↵':'Leer mensaje ↵';
+      }else{
+        const onDone=this.onDone;this.hide();
+        if(onDone)onDone();
+      }
+    }
     next(){
       if(this.wait>0||this.g.dialogue.active||this.g.transition||this.g.paused)return;
+      if(this.mode==='conversation'){
+        this.showConversationMessage();
+        return;
+      }
       if(this.step===0){
         this.append({kind:'narrator',text:'Seguiste a Kiara ✓'});this.button.textContent='Ver mensaje ↵';this.step=1;this.wait=.8;this.button.disabled=true;
       }else if(this.step===1){
@@ -183,7 +207,7 @@
       else if(this.step===4){this.g.intertitles([VG.STORY.instagramMission[1].text],()=>this.g.go('plaza'));this.finished=true;}
     }
     update(dt,input){if(this.wait>0){this.wait=Math.max(0,this.wait-dt);if(this.wait===0)this.button.disabled=false;}if(input.consume('interact'))this.next();}
-    hide(){this.el.classList.add('hidden');this.button.disabled=false;}
+    hide(){this.el.classList.add('hidden');this.button.disabled=false;this.mode=null;this.onDone=null;this.queue=[];}
   }
   VG.Phone=Phone;
 })(window.VG=window.VG||{});
