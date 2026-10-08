@@ -425,7 +425,7 @@
       { kind: 'narrator', text: 'Sorprendentemente, no tiene relevancia para la trama.' }
     ],
     sofa: [
-      { kind: 'narrator', text: 'El sillón está ocupado por una campera.\nTiene mejores contactos que vos.' }
+      { kind: 'narrator', text: 'El sillón está ocupado por una campera.' }
     ],
     blocked: [
       { kind: 'narrator', text: 'No parece que haya nada interesante por ahí.' },

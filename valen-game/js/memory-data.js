@@ -5,11 +5,11 @@
 (function (VG) {
   'use strict';
   VG.MEMORIES = {
-    movie: { number: '01', title: 'Una película', startScene: 'memMovieLiving', description: 'Una notebook y un cambio de ubicación.' },
-    tech: { number: '02', title: 'Servicio técnico', startScene: 'memTechStop', description: 'Un pendrive bastante oportuno.' },
-    dinner: { number: '03', title: 'Plan de último momento', startScene: 'memDinnerChat', description: 'Una cena con Kiara y Bene.' },
-    nextDay: { number: '04', title: 'Al día siguiente', startScene: 'memNextMorning', description: 'Cocinar, salir y terminar en una cancha.' },
-    kiara: { number: '05', title: 'Kiara', startScene: 'memKiaraRoom', description: 'Una escena aparte. Ella sola, de noche.' }
+    movie: { number: '01', title: 'How to lose a guy in 10 days', startScene: 'memMovieLiving', description: 'La mejor romcom del mundo.' },
+    tech: { number: '02', title: 'Servicio técnico', startScene: 'memTechStop', description: 'Instalar Windows.' },
+    dinner: { number: '03', title: 'Plan de último momento', startScene: 'memDinnerChat', description: 'Juntada a último momento de noche.' },
+    nextDay: { number: '04', title: 'Al día siguiente', startScene: 'memNextMorning', description: 'Pueblo Esther y fubo.' },
+    kiara: { number: '05', title: 'Kiara', startScene: 'memKiaraRoom', description: 'Pensamientos de la morra castrosa.' }
   };
   VG.CHARACTERS.sebi = { name: 'SEBI', skin: '#dda27b', hair: '#493a32', eyes: '#5c4435', shirt: '#a5baca', pants: '#414f62', sprite: 'assets/characters/sebi.png' };
 
