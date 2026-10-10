@@ -229,6 +229,10 @@
       { speaker: 'VALEN', text: 'recién estamos empezando' },
       { speaker: 'KIARA', text: 'bueno te perdono' }
     ],
+    walkComfort: [
+      { speaker: 'KIARA', text: 'Cucurella' },
+      { speaker: 'VALEN', text: '¿qué?' }
+    ],
     yogurtInvite: [
       { speaker: 'KIARA', text: 'vamos por yogurt?' },
       { speaker: 'VALEN', text: 'dale.' },

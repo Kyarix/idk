@@ -5,7 +5,7 @@
   display:flex;
   align-items:center;
   justify-content:center;
-  padding:22px;
+  padding:clamp(120px, 22vh, 160px) 22px 22px;
   background:#14251f40;
   cursor:pointer;
 }
@@ -214,7 +214,7 @@
 #credits-memories{color:#e3c29e}
 
 @media(max-width:700px){
-  .declaration{padding:15px}
+  .declaration{padding:clamp(92px, 18vh, 124px) 15px 15px}
   .declaration .declaration-content{width:100%;min-height:min(265px,100%);padding:18px 20px 10px;gap:8px}
   .letter-heading{font-size:12px;padding-bottom:8px}
   .declaration #declaration-text{font-size:15px;line-height:1.45;padding:4px 0}
@@ -228,7 +228,7 @@
   .memory-detail{font-size:9px}
 }
 @media(max-width:420px){
-  .declaration{padding:13px}
+  .declaration{padding:clamp(72px, 16vh, 108px) 13px 13px}
   .declaration .declaration-content{padding:17px 15px 7px;gap:7px}
   .declaration #declaration-text{font-size:14px;line-height:1.4;letter-spacing:-.35px}
   .declaration[data-mode=thoughts] .declaration-content{inset:39% 6% 3%;padding:0}
@@ -239,7 +239,7 @@
   .memories-heading h2{font-size:19px}
 }
 @media(max-height:540px) and (orientation:landscape){
-  .declaration{padding:15px 22px}
+  .declaration{padding:clamp(84px, 14vh, 116px) 22px 15px}
   .declaration .declaration-content{width:min(560px,94%);min-height:min(245px,100%);padding:17px 28px 9px;gap:7px}
   .letter-heading{font-size:12px;padding-bottom:7px}
   .declaration #declaration-text{font-size:15px;line-height:1.4;padding:3px 0}
